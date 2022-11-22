@@ -15,7 +15,6 @@ class WalkNames(WalkAST):
 		If: 'if', For: 'for', While: 'while', Pass: 'pass', Try: 'try',
 		ExceptHandler: 'except', Raise: 'raise', FunctionDef: 'def',
 		Delete: 'del', Return: 'return', Break: 'break', Continue: 'continue',
-		With: 'with'
 	}
 
 	class Scope(dict):
@@ -54,7 +53,6 @@ class WalkNames(WalkAST):
 		if type(node.ctx) == Store:
 			el = self.scopes[-1].get(node.id, None)
 			if el is None:
-				# TODO lambda functions as 'function'
 				self.record_name('variable', node.id, node)
 			else:
 				el.reference(node)
@@ -66,8 +64,9 @@ class WalkNames(WalkAST):
 
 	def enter_FunctionDef(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		self.record_name('function', node.name, node)
+		el = self.record_name('function', node.name, node)
 		self.push_scope()
+		el.set_container_scope(self.current_scope())
 
 	def leave_FunctionDef(self, stack: NodeStack, node: AST) -> None:
 		self.pop_scope()
@@ -82,6 +81,22 @@ class WalkNames(WalkAST):
 	def enter_arg(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
 		self.record_name('argument', node.arg, node)
+
+	def enter_If(self, stack: NodeStack, node: AST) -> None:
+		self.generic_enter(stack, node)
+		self.data.declare('conditional', self.current_scope(), 'if', node)
+	
+	def enter_For(self, stack: NodeStack, node: AST) -> None:
+		self.generic_enter(stack, node)
+		self.data.declare('loop', self.current_scope(), 'for', node)
+
+	def enter_While(self, stack: NodeStack, node: AST) -> None:
+		self.generic_enter(stack, node)
+		self.data.declare('loop', self.current_scope(), 'while', node)
+
+	def enter_Try(self, stack: NodeStack, node: AST) -> None:
+		self.generic_enter(stack, node)
+		self.data.declare('try', self.current_scope(), 'try', node)
 
 	def generic_enter(self, stack: NodeStack, node: AST) -> None:
 		word = self.CLASS_TO_RESERVED_WORD.get(type(node))

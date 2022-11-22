@@ -10,28 +10,39 @@ class ProgramData:
 			self.scope = scope
 			self.id = id
 			self.declaration = declaration
+			self.container_scope = None
 			self.references: List[AST] = []
 			self.values: List[Any] = []
-		
+			self.evaluations: List[int] = []
+
+		def set_container_scope(self, scope: int) -> None:
+			self.container_scope = scope
+
 		def reference(self, node: AST) -> None:
 			self.references.append(node)
 		
 		def value(self, value: Any) -> None:
 			self.values.append(value)
-		
-		def has_node(self, node: AST) -> bool:
+
+		def evaluation(self, branch: int) -> None:
+			self.evaluations.append(branch)
+
+		def has_reference(self, node: AST) -> bool:
 			return node == self.declaration or node in self.references
 
 		def __repr__(self) -> str:
-			info = [f'{self.type}: (S{self.scope}) {self.id}']
+			cscope = f' -> S{self.container_scope}' if self.container_scope else ''
+			info = [f'{self.type}: (S{self.scope}{cscope}) {self.id}']
 			if not self.declaration is None:
 				info.append(f'  declared on {self.declaration.lineno}')
 			if len(self.references) > 0:
 				info.append(f'  referenced on {", ".join(str(r.lineno) for r in self.references)}')
 			if len(self.values) > 0:
 				info.append(f'  assigned values {", ".join(str(v) for v in self.values)}')
+			if len(self.evaluations) > 0:
+				info.append(f'  evaluated {len(self.evaluations)} times')
 			return '\n'.join(info)
-	
+
 	def __init__(self):
 		self.elements: List[self.Element] = []
 
@@ -45,7 +56,7 @@ class ProgramData:
 
 	def element_for_node(self, node: AST, types: List[str]) -> Element:
 		for i, el in enumerate(self.elements):
-			if el.type in types and el.has_node(node):
+			if el.type in types and el.has_reference(node):
 				return i, el
 		return None, None
 	

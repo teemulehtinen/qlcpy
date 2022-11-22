@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from pyqlc.instrument import collect_names, transform, run_with_instrumentor
+from pyqlc.instrument import collect_elements, transform, run_with_instrumentor
 
 class TestTransform(unittest.TestCase):
 
@@ -11,7 +11,7 @@ class TestTransform(unittest.TestCase):
     self.tree = ast.parse(src)
 
   def test_names(self) -> None:
-    data = collect_names(self.tree)
+    data = collect_elements(self.tree)
     self.assertEqual(
       list((e.scope, e.id) for e in data.elements_for_types(['function'])),
       [(0, 'find_first'), (0, 'find_first_w')]
@@ -25,14 +25,9 @@ class TestTransform(unittest.TestCase):
     )
   
   def test_transform(self) -> None:
-    data = collect_names(self.tree)
+    data = collect_elements(self.tree)
     instrumented = transform(self.tree, data, None)
     self.assertNotEqual(self.tree, instrumented)
-    # TODO find some instrumentor nodes
-    #import astpretty
-    #astpretty.pprint(changed, show_offsets=False)
-    #import astor
-    #print(astor.to_source(instrumented))
 
   def test_run(self) -> None:
     instrumentor = run_with_instrumentor(self.tree, 'find_first_w', [['ah', 'beh', 'ceh'], 'b'])

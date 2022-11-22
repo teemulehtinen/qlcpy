@@ -17,6 +17,12 @@ class Instrumentor:
     else:
       self.data.element_n(target).value(as_primitive(value))
 
+  def eval(self, target: Optional[int], branch: int) -> None:
+    if target is None:
+      self.errors.append(f'Evaluation of an unknown branch')
+    else:
+      self.data.element_n(target).evaluation(branch)
+
   def unpack_assignment(self, target: List[Optional[int]], iter: Iterable[Any]) -> Any:
     try:
       for t in target:
@@ -39,3 +45,7 @@ class Instrumentor:
   def iteration(self, target: List[Optional[int]], iter: Iterable[Any]) -> Iterable[Any]:
     for v in iter:
       yield self.assignment(target, v)
+
+  def evaluation(self, target: List[Optional[int]], branch: int) -> None:
+    if len(target) > 0:
+      self.eval(target[0], branch)

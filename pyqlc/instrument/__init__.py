@@ -10,7 +10,7 @@ from .trees import simple_call
 INSTRUMENT_NAME = '___i'
 TEMPORARY_NAME = '___t'
 
-def collect_names(tree: AST) -> ProgramData:
+def collect_elements(tree: AST) -> ProgramData:
   return WalkNames().walk(tree)
 
 def transform(tree: AST, data: ProgramData, call: Optional[AST]) -> AST:
@@ -26,6 +26,6 @@ def run_with_instrumentor(
   func: Optional[str] = None,
   args: Optional[List[Any]] = None
 ) -> Instrumentor:
-  data = collect_names(tree)
+  data = collect_elements(tree)
   instrumented = transform(tree, data, simple_call(func, args))
   return run(instrumented, data)

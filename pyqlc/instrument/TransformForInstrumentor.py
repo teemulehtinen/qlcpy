@@ -1,6 +1,6 @@
 from ast import (
-  AnnAssign, AST, Assign, Attribute, BinOp, Call, Constant, Del, Delete,
-  For, FunctionDef, Load, List as ASTList, Module, Name, Store
+  AnnAssign, AST, Assign, Attribute, BinOp, Call, Constant, Del, Delete, Expr,
+  For, FunctionDef, If, Load, List as ASTList, Module, Name, Store, While
 )
 from typing import List, Optional
 
@@ -27,12 +27,12 @@ class TransformForInstrumentor(TransformAST):
       []
     )
 
-  def target(self, node: AST) -> AST:
+  def target(self, node: AST, types: Optional[List[str]] = None) -> AST:
     # TODO handle Subscript/Attribute in target?
     return ASTList(
       list(
         Constant(i, None) for i, _ in [
-          self.data.element_for_node(el, ['function', 'variable', 'argument']) for el in (
+          self.data.element_for_node(el, types or ['function', 'variable', 'argument']) for el in (
             node.elts if node.__class__.__name__ in ('Tuple', 'List') else [node]
           )
         ]
@@ -84,25 +84,70 @@ class TransformForInstrumentor(TransformAST):
     return For(
       node.target,
       self.ins('iteration', self.target(node.target), node.iter),
-      [
-        # TODO count passes
-        *node.body
-      ],
+      node.body,
       node.orelse,
       node.type_comment
     )
-  
-  def leave_FunctionDef(self, stack: NodeStack, node: AST) -> AST:
-    return FunctionDef(
-      node.name,
-      node.args,
+
+  def enter_If(self, stack: NodeStack, node: AST) -> AST:
+    target = self.target(node, ['conditional'])
+    orelse = self.transform_attr(stack, node, 'orelse')
+    return If(
+      self.transform_attr(stack, node, 'test'),
       [
-        # TODO count calls
-        *node.body
+        Expr(self.ins('evaluation', target, Constant(0, None))),
+        *self.transform_attr(stack, node, 'body')
       ],
-      node.decorator_list,
-      node.returns,
-      node.type_comment
+      [
+        Expr(self.ins('evaluation', target, Constant(1, None))),
+        *orelse
+      ] if orelse else orelse
+    )
+
+  def enter_While(self, stack: NodeStack, node: AST) -> AST:
+    target = self.target(node, ['loop'])
+    orelse = self.transform_attr(stack, node, 'orelse')
+    return While(
+      self.transform_attr(stack, node, 'test'),
+      [
+        Expr(self.ins('evaluation', target, Constant(0, None))),
+        *self.transform_attr(stack, node, 'body')
+      ],
+      [
+        Expr(self.ins('evaluation', target, Constant(1, None))),
+        *orelse
+      ] if orelse else orelse
+    )
+
+  def enter_For(self, stack: NodeStack, node: AST) -> AST:
+    target = self.target(node, ['loop'])
+    orelse = self.transform_attr(stack, node, 'orelse')
+    return For(
+      self.transform_attr(stack, node, 'target'),
+      self.transform_attr(stack, node, 'iter'),
+      [
+        Expr(self.ins('evaluation', target, Constant(0, None))),
+        *self.transform_attr(stack, node, 'body')
+      ],
+      [
+        Expr(self.ins('evaluation', target, Constant(1, None))),
+        *orelse,
+      ] if orelse else orelse,
+      self.transform_attr(stack, node, 'type_comment')
+    )
+
+  def enter_FunctionDef(self, stack: NodeStack, node: AST) -> AST:
+    target = self.target(node, ['function'])
+    return FunctionDef(
+      self.transform_attr(stack, node, 'name'),
+      self.transform_attr(stack, node, 'args'),
+      [
+        Expr(self.ins('evaluation', target, Constant(0, None))),
+        *self.transform_attr(stack, node, 'body')
+      ],
+      self.transform_attr(stack, node, 'decorator_list'),
+      self.transform_attr(stack, node, 'returns'),
+      self.transform_attr(stack, node, 'type_comment')
     )
 
   def leave_Module(self, stack: NodeStack, node: AST) -> AST:

@@ -14,6 +14,9 @@ class TransformAST(ASTMethods):
       return list(self.transform_item(stack, item) for item in value)
     return self.transform_item(stack, value)
 
+  def transform_attr(self, stack: NodeStack, node: AST, field: str) -> Any:
+    return self.transform_field(stack_add(stack, node, field), getattr(node, field))
+
   def generic_enter(self, stack: NodeStack, node: AST) -> AST:
     n = None
     for field, value in iter_fields(node):
