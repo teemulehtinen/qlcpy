@@ -16,7 +16,7 @@ def collect_elements(tree: AST) -> ProgramData:
 def transform(tree: AST, data: ProgramData, call: Optional[AST]) -> AST:
   return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, call)
 
-def run(transformed: AST, data: ProgramData) -> Instrumentor:
+def run(transformed: AST, data: ProgramData) -> None:
   instrumentor = Instrumentor(data)
   exec(compile(transformed, '<string>', 'exec'), { INSTRUMENT_NAME: instrumentor })
   return instrumentor
@@ -27,5 +27,5 @@ def run_with_instrumentor(
   args: Optional[List[Any]] = None
 ) -> Instrumentor:
   data = collect_elements(tree)
-  instrumented = transform(tree, data, simple_call(func, args))
+  instrumented = transform(tree, data, simple_call(func, args or []) if func else None)
   return run(instrumented, data)
