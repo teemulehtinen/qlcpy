@@ -2,7 +2,7 @@ import argparse
 import ast
 import json
 
-from .generator import generate, QLCRequest, ProgramInput
+from .generator import generate, QLCRequest, ProgramInput, QLC
 from .questions import TEMPLATES
 
 def main():
@@ -27,9 +27,7 @@ def main():
   with open(args.program, 'r') as f:
     tree = ast.parse(f.read())
 
-  print(json.dumps(list(
-    qlc.to_dict() for qlc in generate(
-      tree,
-      [QLCRequest(args.n, types=args.type)]
-    )
+  print('\n---\n'.join(str(qlc) for qlc in generate(
+    tree,
+    [QLCRequest(args.n, types=args.type)]
   )))

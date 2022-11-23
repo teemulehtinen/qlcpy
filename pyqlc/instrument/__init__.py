@@ -3,6 +3,7 @@ from typing import Any, List, Optional
 
 from .ProgramData import ProgramData
 from .WalkNames import WalkNames
+from .WalkFind import WalkFind
 from .Instrumentor import Instrumentor
 from .TransformForInstrumentor import TransformForInstrumentor
 from .trees import simple_call
@@ -12,6 +13,9 @@ TEMPORARY_NAME = '___t'
 
 def collect_elements(tree: AST) -> ProgramData:
   return WalkNames().walk(tree)
+
+def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
+  return WalkFind().walk(tree, class_names)
 
 def transform(tree: AST, data: ProgramData, call: Optional[AST]) -> AST:
   return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, call)

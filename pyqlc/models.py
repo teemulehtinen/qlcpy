@@ -19,7 +19,7 @@ class ProgramInput:
     self.args = args
 
 class QLCOption:
-  def __init__(self, type: str, answer: Union[str, int], correct: bool = False, info: str = None):
+  def __init__(self, type: str, answer: Any, correct: bool = False, info: str = None):
     self.type = type
     self.answer = answer
     self.correct = correct
@@ -32,6 +32,9 @@ class QLCOption:
       'correct': self.correct,
       'info': self.info,
     }
+  
+  def __repr__(self) -> str:
+    return f'{"*" if self.correct  else " "} {self.answer}: {self.info} [{self.type}]'
 
 class QLC:
   def __init__(self, type: str, question: str, options: List[QLCOption]):
@@ -43,10 +46,15 @@ class QLC:
     return {
       'type': self.type,
       'question': self.question,
-      'options': self.options,
+      'options': list(o.to_dict() for o in self.options),
     }
 
+  def __repr__(self) -> str:
+    return '\n'.join([f'{self.question} [{self.type}]', *[str(o) for o in self.options]])
+
 class QLCPrepared:
-  def __init__(self, type: str, make: Callable[..., QLC]):
+  def __init__(self, type: str):
     self.type = type
-    self.make = make
+
+  def make(self) -> Optional[QLC]:
+    return None
