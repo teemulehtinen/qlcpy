@@ -1,4 +1,5 @@
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, List, Optional
+from .instrument.primitives import print_primitive
 
 class QLCRequest:
   def __init__(
@@ -17,6 +18,9 @@ class ProgramInput:
   def __init__(self, func: str, args: List[Any]):
     self.func = func
     self.args = args
+  
+  def __repr__(self):
+    return f'{self.func}({", ".join(print_primitive(a) for a in self.args)})'
 
 class QLCOption:
   def __init__(self, type: str, answer: Any, correct: bool = False, info: str = None):

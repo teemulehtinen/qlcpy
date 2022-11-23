@@ -25,4 +25,14 @@ texts = {
   'o_variable_declaration_reference':
     f'Tämä rivi viittaa (lukee tai sijoittaa) annettuun muuttujaan, MUTTA se luodaan aiemmin',
   'o_variable_declaration_random': 'Tämä on satunnainen rivi, joka ei käsittele annettua muuttujaa',
+
+  'q_loop_count':
+    lambda line: f'Rivillä {line} on toistorakenne. Kuinka monta kertaa toisto suoritetaan?',
+  'q_loop_count_call':
+    lambda line, call: (
+      f'Rivillä {line} on toistorakenne. Kuinka monta kertaa toisto suoritetaan '
+      f'kutsuttaessa <em>{call}</em>?'
+    ),
+  'o_loop_count_correct': f'Oikein, näin monta kertaa toisto tapahtui',
+  'o_loop_count_random': f'Tämä on satunnainen väärä lukumäärä',
 }
