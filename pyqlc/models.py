@@ -14,14 +14,6 @@ class QLCRequest:
     self.types = types
     self.unique_types = unique_types
 
-class ProgramInput:
-  def __init__(self, func: str, args: List[Any]):
-    self.func = func
-    self.args = args
-  
-  def __repr__(self):
-    return f'{self.func}({", ".join(print_primitive(a) for a in self.args)})'
-
 class QLCOption:
   def __init__(self, type: str, answer: Any, correct: bool = False, info: str = None):
     self.type = type

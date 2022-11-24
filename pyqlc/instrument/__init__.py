@@ -1,5 +1,5 @@
-from ast import AST
-from typing import Any, List, Optional
+from ast import AST, parse
+from typing import List, Optional
 
 from .ProgramData import ProgramData
 from .WalkNames import WalkNames
@@ -17,8 +17,8 @@ def collect_elements(tree: AST) -> ProgramData:
 def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
   return WalkFind().walk(tree, class_names)
 
-def transform(tree: AST, data: ProgramData, call: Optional[AST]) -> AST:
-  return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, call)
+def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
+  return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, add)
 
 def run(transformed: AST, data: ProgramData) -> None:
   instrumentor = Instrumentor(data)
@@ -27,9 +27,14 @@ def run(transformed: AST, data: ProgramData) -> None:
 
 def run_with_instrumentor(
   tree: AST,
-  func: Optional[str] = None,
-  args: Optional[List[Any]] = None
+  call: Optional[List[AST]] = None,
 ) -> Instrumentor:
   data = collect_elements(tree)
-  instrumented = transform(tree, data, simple_call(func, args or []) if func else None)
+  instrumented = transform(tree, data, call)
   return run(instrumented, data)
+
+def parse_body(call: Optional[str]):
+  if call:
+    mod = parse(call)
+    return mod.body
+  return None

@@ -18,7 +18,7 @@ class TransformForInstrumentor(TransformAST):
     self.ins_name = ins_name
     self.tmp_name = tmp_name
     self.data: Optional[ProgramData] = None
-    self.call: Optional[AST] = None
+    self.add: List[AST] = []
 
   def ins(self, method: str, *args: AST) -> AST:
     return Call(
@@ -151,12 +151,9 @@ class TransformForInstrumentor(TransformAST):
     )
 
   def leave_Module(self, stack: NodeStack, node: AST) -> AST:
-    return Module(
-      [*node.body, *([self.call] if self.call else [])],
-      node.type_ignores
-    )
+    return Module([*node.body, *self.add], node.type_ignores)
 
-  def transform(self, tree: AST, data: ProgramData, call: Optional[AST] = None) -> AST:
+  def transform(self, tree: AST, data: ProgramData, add: Optional[List[AST]] = None) -> AST:
     self.data = data
-    self.call = call
+    self.add = add or []
     return super().transform(tree)

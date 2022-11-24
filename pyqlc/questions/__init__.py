@@ -1,11 +1,11 @@
 from ast import AST
-from typing import Callable, List
+from typing import Callable, List, Optional
 
-from ..models import ProgramInput, QLCPrepared
 from ..instrument import Instrumentor
+from ..models import QLCPrepared
 from . import lines, dynamic
 
-QLCMaker = Callable[[str, AST, ProgramInput, Instrumentor], List[QLCPrepared]]
+QLCMaker = Callable[[str, AST, Optional[str], Instrumentor], List[QLCPrepared]]
 
 class QLCTemplate:
   def __init__(self, type: str, description: str, maker: QLCMaker):

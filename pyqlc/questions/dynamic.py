@@ -1,15 +1,15 @@
 from ast import AST
-from typing import List
+from typing import List, Optional
 
 from ..i18n import t
 from ..instrument import find_nodes, Instrumentor, ProgramData
-from ..models import ProgramInput, QLC, QLCPrepared
+from ..models import QLC, QLCPrepared
 from .options import pick_options, options, fill_random_options
 
 class LoopCount(QLCPrepared):
-  def __init__(self, type: str, input: ProgramInput, element: ProgramData.Element):
+  def __init__(self, type: str, call: Optional[str], element: ProgramData.Element):
     super().__init__(type)
-    self.input = input
+    self.call = call
     self.loop = element
 
   def make(self):
@@ -19,8 +19,8 @@ class LoopCount(QLCPrepared):
     return QLC(
       self.type,
       (
-        t('q_loop_count_call', self.loop.declaration.lineno, str(self.input))
-        if self.input else
+        t('q_loop_count_call', self.loop.declaration.lineno, self.call)
+        if self.call else
         t('q_loop_count', self.loop.declaration.lineno)
       ),
       pick_options(
@@ -32,15 +32,15 @@ class LoopCount(QLCPrepared):
 def loop_count(
   type: str,
   tree: AST,
-  input: ProgramInput,
+  call: Optional[str],
   instrumentor: Instrumentor
 ) -> List[QLCPrepared]:
-  return list(LoopCount(type, input, e) for e in instrumentor.data.elements_for_types('loop'))
+  return list(LoopCount(type, call, e) for e in instrumentor.data.elements_for_types('loop'))
 
 def variable_trace(
   type: str,
   tree: AST,
-  input: ProgramInput,
+  call: Optional[str],
   instrumentor: Instrumentor
 ) -> List[QLCPrepared]:
   return []

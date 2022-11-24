@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from pyqlc.instrument import collect_elements, transform, run_with_instrumentor
+from pyqlc.instrument import collect_elements, transform, run_with_instrumentor, parse_body
 
 class TestTransform(unittest.TestCase):
 
@@ -30,14 +30,16 @@ class TestTransform(unittest.TestCase):
     self.assertNotEqual(self.tree, instrumented)
 
   def test_run(self) -> None:
-    instrumentor = run_with_instrumentor(self.tree, 'find_first_w', [['ah', 'beh', 'ceh'], 'b'])
+    call = "find_first_w(['ah', 'beh', 'ceh'], 'b')"
+    instrumentor = run_with_instrumentor(self.tree, parse_body(call))
     self.assertEqual(len(instrumentor.errors), 0)
     vars = list(instrumentor.data.elements_for_types(['variable']))
     self.assertEqual(len(vars), 2)
     self.assertEqual(vars[1].values, [0, 1])
   
   def test_run_for(self) -> None:
-    instrumentor = run_with_instrumentor(self.tree, 'find_first', [['ah', 'beh', 'ceh'], 'b'])
+    call = "find_first(['ah', 'beh', 'ceh'], 'b')"
+    instrumentor = run_with_instrumentor(self.tree, parse_body(call))
     self.assertEqual(len(instrumentor.errors), 0)
     vars = list(instrumentor.data.elements_for_types(['variable']))
     self.assertEqual(len(vars), 2)

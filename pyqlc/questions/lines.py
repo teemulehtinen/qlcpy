@@ -1,10 +1,10 @@
 import random
 from ast import AST
-from typing import List
+from typing import List, Optional
 
 from ..i18n import t
 from ..instrument import find_nodes, Instrumentor, ProgramData
-from ..models import ProgramInput, QLC, QLCPrepared
+from ..models import QLC, QLCPrepared
 from .options import pick_options, options, random_options, fill_random_options
 
 class LoopEnd(QLCPrepared):
@@ -29,7 +29,7 @@ class LoopEnd(QLCPrepared):
 def loop_end(
   type: str,
   tree: AST,
-  input: ProgramInput,
+  call: Optional[str],
   instrumentor: Instrumentor
 ) -> List[LoopEnd]:
   return list(LoopEnd(type, node) for node in find_nodes(tree, ['For', 'While']))
@@ -67,7 +67,7 @@ class VariableDeclaration(QLCPrepared):
 def variable_declaration(
   type: str,
   tree: AST,
-  input: ProgramInput,
+  call: Optional[str],
   instrumentor: Instrumentor
 ) -> List[VariableDeclaration]:
   return list(VariableDeclaration(type, e) for e in instrumentor.data.elements_for_types('variable'))

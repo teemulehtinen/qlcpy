@@ -2,7 +2,7 @@ import argparse
 import ast
 import json
 
-from .generator import generate, QLCRequest, ProgramInput, QLC
+from .generator import generate, QLCRequest, QLC
 from .questions import TEMPLATES
 
 def main():
@@ -10,6 +10,7 @@ def main():
     description='PyQLC generates questions that target analysed facts about the given program'
   )
   parser.add_argument('program', nargs='?', default=None, help='A python program file')
+  parser.add_argument('-c', '--call', help='A python call to execute')
   parser.add_argument('-t', '--type', nargs='+', help='Only these question types')
   parser.add_argument('-n', default=3, help='Number of questions (at maximum)')
   parser.add_argument('--json', action='store_true', help='Print question data as JSON')
@@ -30,7 +31,8 @@ def main():
 
   qlcs = generate(
     tree,
-    [QLCRequest(args.n, types=args.type)]
+    [QLCRequest(args.n, types=args.type)],
+    args.call
   )
 
   if args.json:

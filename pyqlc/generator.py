@@ -1,10 +1,10 @@
+import ast
 import random
-from ast import AST
 from typing import List, Optional, Set
 
-from .models import QLCRequest, ProgramInput, QLC
+from .models import QLCRequest, QLC
 from .questions import TEMPLATES, QLCTemplate
-from .instrument import run_with_instrumentor
+from .instrument import run_with_instrumentor, parse_body
 
 def select_templates(req: List[QLCRequest]) -> List[QLCTemplate]:
   select: Set[QLCTemplate] = set()
@@ -15,17 +15,14 @@ def select_templates(req: List[QLCRequest]) -> List[QLCTemplate]:
   return list(t for t in TEMPLATES if t in select)
 
 def generate(
-  tree: AST,
+  src: str,
   requests: Optional[List[QLCRequest]] = None,
-  input: Optional[List[ProgramInput]] = None
+  call: Optional[str] = None
 ) -> List[QLC]:
-  instrumentor = run_with_instrumentor(
-    tree,
-    input.func if input else None,
-    input.args if input else None
-  )
+  tree = ast.parse(src)
+  instrumentor = run_with_instrumentor(tree, parse_body(call))
   prepared = list(
-    p for t in select_templates(requests) for p in t.maker(t.type, tree, input, instrumentor)
+    p for t in select_templates(requests) for p in t.maker(t.type, tree, call, instrumentor)
   )
   out: List[QLC] = []
   for r in requests:
