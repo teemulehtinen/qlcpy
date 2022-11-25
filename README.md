@@ -1,4 +1,4 @@
-# pyqlc
+# QLCpy
 
 Generates questions about concrete constructs and patterns in a given Python program.
 These questions (including answering options) can be posed to a learner to practice
@@ -25,7 +25,7 @@ TODO
 
 ### Installation
 
-    pip install pyqlc-questions
+    pip install qlcpy
 
 ### Usage
 
