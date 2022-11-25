@@ -23,6 +23,10 @@ TODO
 
 ---
 
+### Installation
+
+    pip install pyqlc-questions
+
 ### Usage
 
 TODO

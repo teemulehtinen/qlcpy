@@ -7,7 +7,7 @@ from .questions import TEMPLATES
 
 def main():
   parser = argparse.ArgumentParser(
-    description='PyQLC generates questions that target analysed facts about the given program'
+    description='QLCpy generates questions that target analysed facts about the given program'
   )
   parser.add_argument('program', nargs='?', default=None, help='A python program file')
   parser.add_argument('-c', '--call', help='A python call to execute')
@@ -38,4 +38,4 @@ def main():
   if args.json:
     print(json.dumps(list(qlc.to_dict() for qlc in qlcs)))
   else:
-    print('\n---\n'.join(str(qlc) for qlc in qlcs))
+    print('\n\n'.join(str(qlc) for qlc in qlcs))
