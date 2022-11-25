@@ -1,5 +1,4 @@
 from typing import Any, List, Optional
-from .instrument.primitives import print_primitive
 
 class QLCRequest:
   def __init__(
