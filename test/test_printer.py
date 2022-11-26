@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from pyqlc.instrument import collect_elements, transform, parse_body
+from qlcpy.instrument import collect_elements, transform, parse_body
 
 class TestTmp(unittest.TestCase):
 

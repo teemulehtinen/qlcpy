@@ -1,3 +1,5 @@
+import io
+import sys
 from ast import AST, parse
 from typing import List, Optional
 
@@ -6,7 +8,6 @@ from .WalkNames import WalkNames
 from .WalkFind import WalkFind
 from .Instrumentor import Instrumentor
 from .TransformForInstrumentor import TransformForInstrumentor
-from .trees import simple_call
 
 INSTRUMENT_NAME = '___i'
 TEMPORARY_NAME = '___t'
@@ -20,18 +21,21 @@ def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
 def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
   return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, add)
 
-def run(transformed: AST, data: ProgramData) -> None:
+def run(transformed: AST, data: ProgramData, input: Optional[str]) -> None:
   instrumentor = Instrumentor(data)
+  if not input is None:
+    sys.stdin = io.StringIO(input)
   exec(compile(transformed, '<string>', 'exec'), { INSTRUMENT_NAME: instrumentor })
   return instrumentor
 
 def run_with_instrumentor(
   tree: AST,
   call: Optional[List[AST]] = None,
+  input: Optional[str] = None
 ) -> Instrumentor:
   data = collect_elements(tree)
   instrumented = transform(tree, data, call)
-  return run(instrumented, data)
+  return run(instrumented, data, input)
 
 def parse_body(call: Optional[str]):
   if call:

@@ -30,7 +30,7 @@ def loop_end(
   type: str,
   tree: AST,
   call: Optional[str],
-  instrumentor: Instrumentor
+  ins: Instrumentor
 ) -> List[LoopEnd]:
   return list(LoopEnd(type, node) for node in find_nodes(tree, ['For', 'While']))
 
@@ -55,10 +55,16 @@ class VariableDeclaration(QLCPrepared):
       t(text_id[ref.ctx.__class__.__name__], ref.id, ref.lineno),
       pick_options(
         options([decl.lineno], 'declaration_line', t('o_variable_declaration_correct'), True),
-        random_options(2, [r.lineno for r in refs], t('o_variable_declaration_reference')),
+        random_options(
+          2,
+          [r.lineno for r in refs],
+          'reference_line',
+          t('o_variable_declaration_reference')
+        ),
         fill_random_options(
           4,
           range(max(1, decl.lineno - 2), max(r.lineno for r in refs) + 3),
+          'random_line',
           t('o_variable_declaration_random')
         )
       )
@@ -68,6 +74,6 @@ def variable_declaration(
   type: str,
   tree: AST,
   call: Optional[str],
-  instrumentor: Instrumentor
+  ins: Instrumentor
 ) -> List[VariableDeclaration]:
-  return list(VariableDeclaration(type, e) for e in instrumentor.data.elements_for_types('variable'))
+  return list(VariableDeclaration(type, e) for e in ins.data.elements_for_types('variable'))

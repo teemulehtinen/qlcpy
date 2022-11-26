@@ -33,14 +33,15 @@ def loop_count(
   type: str,
   tree: AST,
   call: Optional[str],
-  instrumentor: Instrumentor
+  ins: Instrumentor
 ) -> List[QLCPrepared]:
-  return list(LoopCount(type, call, e) for e in instrumentor.data.elements_for_types('loop'))
+  return list(LoopCount(type, call, e) for e in ins.data.elements_for_types('loop'))
 
 def variable_trace(
   type: str,
   tree: AST,
   call: Optional[str],
-  instrumentor: Instrumentor
+  ins: Instrumentor
 ) -> List[QLCPrepared]:
+  # TODO maanantaina
   return []

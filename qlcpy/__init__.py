@@ -11,8 +11,10 @@ def main():
   )
   parser.add_argument('program', nargs='?', default=None, help='A python program file')
   parser.add_argument('-c', '--call', help='A python call to execute')
-  parser.add_argument('-t', '--type', nargs='+', help='Only these question types')
+  parser.add_argument('-i', '--input', help='Use as stdio when executing')
   parser.add_argument('-n', default=3, help='Number of questions (at maximum)')
+  parser.add_argument('-t', '--types', nargs='+', help='Only these question types')
+  parser.add_argument('-u', '--unique', action='store_true', help='Only unique question types')
   parser.add_argument('--json', action='store_true', help='Print question data as JSON')
   parser.add_argument('--list-types', action='store_true', help='List available question types')
   args = parser.parse_args()
@@ -31,8 +33,9 @@ def main():
 
   qlcs = generate(
     tree,
-    [QLCRequest(args.n, types=args.type)],
-    args.call
+    [QLCRequest(args.n, types=args.types, unique_types=args.unique)],
+    args.call,
+    args.input
   )
 
   if args.json:

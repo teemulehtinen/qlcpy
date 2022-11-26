@@ -1,6 +1,6 @@
 import unittest
 
-from pyqlc.instrument import Instrumentor, ProgramData
+from qlcpy.instrument import Instrumentor, ProgramData
 
 class TestInstrumentor(unittest.TestCase):
 

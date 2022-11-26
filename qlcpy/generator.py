@@ -17,10 +17,11 @@ def select_templates(req: List[QLCRequest]) -> List[QLCTemplate]:
 def generate(
   src: str,
   requests: Optional[List[QLCRequest]] = None,
-  call: Optional[str] = None
+  call: Optional[str] = None,
+  input: Optional[str] = None
 ) -> List[QLC]:
   tree = ast.parse(src)
-  instrumentor = run_with_instrumentor(tree, parse_body(call))
+  instrumentor = run_with_instrumentor(tree, parse_body(call), input)
   prepared = list(
     p for t in select_templates(requests) for p in t.maker(t.type, tree, call, instrumentor)
   )

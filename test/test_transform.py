@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from pyqlc.instrument import collect_elements, transform, run_with_instrumentor, parse_body
+from qlcpy.instrument import collect_elements, transform, run_with_instrumentor, parse_body
 
 class TestTransform(unittest.TestCase):
 
@@ -44,3 +44,16 @@ class TestTransform(unittest.TestCase):
     vars = list(instrumentor.data.elements_for_types(['variable']))
     self.assertEqual(len(vars), 2)
     self.assertEqual(vars[0].values, [0, 1, 2])
+
+  def test_input(self) -> None:
+    tree = ast.parse(
+"""
+run = True
+while run:
+  line = input('Read stdin')
+  run = line != 'end'
+"""
+    )
+    instrumentor = run_with_instrumentor(tree, None, "line1\nline2\nend\n")
+    line = instrumentor.data.element_for_id('line')
+    self.assertEqual(line.values, ['line1', 'line2', 'end'])
