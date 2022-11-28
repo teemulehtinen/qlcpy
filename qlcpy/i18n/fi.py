@@ -7,32 +7,49 @@ texts = {
   'o_loop_end_inside': 'Tämä rivi on toistorakenteen sisällä, MUTTA se ei ole viimeinen rivi',
 
   'q_variable_write_declaration':
-    lambda var, line: (
-      f'Muuttujaan <em>{var}</em> asetetaan arvo rivillä {line}. '
-      f'Millä rivillä <em>{var}</em> luodaan?'
+    lambda id, line: (
+      f'Muuttujaan <em>{id}</em> asetetaan arvo rivillä {line}. '
+      f'Millä rivillä <em>{id}</em> luodaan?'
     ),
   'q_variable_read_declaration':
-    lambda var, line: (
-      f'Muuttujasta <em>{var}</em> luetaan arvo rivillä {line}. '
-      f'Millä rivillä <em>{var}</em> luodaan?',
+    lambda id, line: (
+      f'Muuttujasta <em>{id}</em> luetaan arvo rivillä {line}. '
+      f'Millä rivillä <em>{id}</em> luodaan?',
     ),
   'q_variable_del_declaration':
-    lambda var, line: (
-      f'Muuttuja <em>{var}</em> poistetaan rivillä {line}. '
-      f'Millä rivillä <em>{var}</em> luodaan?',
+    lambda id, line: (
+      f'Muuttuja <em>{id}</em> poistetaan rivillä {line}. '
+      f'Millä rivillä <em>{id}</em> luodaan?',
     ),
-  'o_variable_declaration_correct': f'Oikein, annettu muuttuja luodaan tällä rivillä.',
+  'o_variable_declaration_correct': 'Oikein, annettu muuttuja luodaan tällä rivillä.',
   'o_variable_declaration_reference':
-    f'Tämä rivi viittaa (lukee tai sijoittaa) annettuun muuttujaan, MUTTA se luodaan aiemmin',
+    'Tämä rivi viittaa (lukee tai sijoittaa) annettuun muuttujaan, MUTTA se luodaan aiemmin',
   'o_variable_declaration_random': 'Tämä on satunnainen rivi, joka ei käsittele annettua muuttujaa',
 
   'q_loop_count':
-    lambda line: f'Rivillä {line} on toistorakenne. Kuinka monta kertaa toisto suoritetaan?',
+    lambda line: (
+      f'Rivillä {line} on toistorakenne. Kuinka monta kertaa toisto suoritetaan, '
+      'kun ohjelma ajetaan.'
+    ),
   'q_loop_count_call':
     lambda line, call: (
-      f'Rivillä {line} on toistorakenne. Kuinka monta kertaa toisto suoritetaan '
-      f'kutsuttaessa <em>{call}</em>?'
+      f'Rivillä {line} on toistorakenne. Kuinka monta kertaa toisto suoritetaan, '
+      f'kun ajetaan <em>{call}</em>?'
     ),
-  'o_loop_count_correct': f'Oikein, näin monta kertaa toisto tapahtui',
-  'o_loop_count_random': f'Tämä on satunnainen väärä lukumäärä',
+  'o_loop_count_correct': 'Oikein, näin monta kertaa toisto tapahtui',
+  'o_loop_count_random': 'Tämä on satunnainen väärä lukumäärä',
+
+  'q_variable_trace':
+    lambda id, line: (
+      f'Rivillä {line} määritellään muuttuja <em>{id}</em>. Mitkä arvot ja missä ',
+      'järjestyksessä siihen sijoitetaan, kun ohjelma ajetaan.'
+    ),
+  'q_variable_trace_call':
+    lambda id, line, call: (
+      f'Rivillä {line} määritellään muuttuja <em>{id}</em>. Mitkä arvot ja missä järjestyksessä '
+      f'siihen sijoitetaan, kun ajetaan <em>{call}</em>?'
+    ),
+  'o_variable_trace_correct': 'Oikein, nämä arvot sijoitettiin tässä järjestyksessä muuttujaan.',
+  'o_variable_trace_miss': 'Tästä sarjasta puuttuu muuttujaan sijoitettu arvo.',
+  'o_variable_trace_random': 'Tämä on satunnainen väärä arvojen sarja.',
 }

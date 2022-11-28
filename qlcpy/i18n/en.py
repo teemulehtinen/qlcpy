@@ -7,22 +7,49 @@ texts = {
   'o_loop_end_inside': 'This line is inside the loop BUT it is not the last one',
 
   'q_variable_write_declaration':
-    lambda var, line: (
-      f'A value is assigned to variable <em>{var}</em> on line {line}. '
-      f'On which line is <em>{var}</em> created?'
+    lambda id, line: (
+      f'A value is assigned to variable <em>{id}</em> on line {line}. '
+      f'On which line is <em>{id}</em> created?'
     ),
   'q_variable_read_declaration':
-    lambda var, line: (
-      f'A value is accessed from variable <em>{var}</em> on line {line}. '
-      f'On which line is <em>{var}</em> created?',
+    lambda id, line: (
+      f'A value is accessed from variable <em>{id}</em> on line {line}. '
+      f'On which line is <em>{id}</em> created?',
     ),
   'q_variable_del_declaration':
-    lambda var, line: (
-      f'Variable <em>{var}</em> is deleted on line {line}. '
-      f'On which line is <em>{var}</em> created?',
+    lambda id, line: (
+      f'Variable <em>{id}</em> is deleted on line {line}. '
+      f'On which line is <em>{id}</em> created?',
     ),
-  'o_variable_declaration_correct': f'Correct, this is the line where the variable is created.',
+  'o_variable_declaration_correct': 'Correct, this is the line where the variable is created.',
   'o_variable_declaration_reference':
     f'This line references (reads or assigns) the given variable BUT it is created before',
   'o_variable_declaration_random': 'This is a random line that does not handle the given variable',
+
+  'q_loop_count':
+    lambda line: (
+      f'Line {line} has a loop structure. How many times does the loop execute '
+      'when the program is run.'
+    ),
+  'q_loop_count_call':
+    lambda line, call: (
+      f'Line {line} has a loop structure. How many times does the loop execute '
+      f'when running <em>{call}</em>?'
+    ),
+  'o_loop_count_correct': 'Correct, this is the number of times the loop executed.',
+  'o_loop_count_random': 'This is an incorrect, random number.',
+
+  'q_variable_trace':
+    lambda id, line: (
+      f'Line {line} declares a variable named <em>{id}</em>. Which values and in which '
+      'order are assigned to the variable when the program is run?'
+    ),
+  'q_variable_trace_call':
+    lambda id, line, call: (
+      f'Line {line} declares a variable named <em>{id}</em>. Which values and in which '
+      f'order are assigned to the variable when running <em>{call}</em>?'
+    ),
+  'o_variable_trace_correct': 'Correct, these values where assigned in this order to the variable.',
+  'o_variable_trace_miss': 'This sequence is missing a value that was assigned to the variable.',
+  'o_variable_trace_random': 'This is an incorrect, random sequence of values.',
 }

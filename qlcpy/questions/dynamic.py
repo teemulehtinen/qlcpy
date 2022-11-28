@@ -1,9 +1,11 @@
 from ast import AST
-from typing import List, Optional
+from typing import Any, List, Optional
 
+from ..arrays import random_steps
 from ..i18n import t
 from ..instrument import find_nodes, Instrumentor, ProgramData
 from ..models import QLC, QLCPrepared
+from ..primitives import primitive_to_str
 from .options import pick_options, options, fill_random_options
 
 class LoopCount(QLCPrepared):
@@ -37,11 +39,42 @@ def loop_count(
 ) -> List[QLCPrepared]:
   return list(LoopCount(type, call, e) for e in ins.data.elements_for_types('loop'))
 
+class VariableTrace(QLCPrepared):
+  def __init__(self, type: str, call: Optional[str], element: ProgramData.Element, seeds: List[Any]):
+    super().__init__(type)
+    self.call = call
+    self.variable = element
+    self.seeds = seeds
+  
+  def make(self):
+    decl = self.variable.declaration
+    vals = self.variable.values
+    if decl is None or len(vals) > 5:
+      return None
+    return QLC(
+      self.type,
+      (
+        t('q_variable_trace_call', decl.id, decl.lineno, self.call)
+        if self.call else
+        t('q_variable_trace', decl.id, decl.lineno)
+      ),
+      pick_options(
+        options([primitive_to_str(vals)], 'correct_trace', t('o_variable_trace_correct'), True),
+        options([primitive_to_str(vals[:-1])], 'miss_value', t('o_variable_trace_miss')),
+        fill_random_options(
+          4,
+          [primitive_to_str(a) for a in random_steps(vals, self.seeds)],
+          'random_values',
+          t('o_variable_trace_random')
+        ),
+      )
+    )
+
 def variable_trace(
   type: str,
   tree: AST,
   call: Optional[str],
   ins: Instrumentor
-) -> List[QLCPrepared]:
-  # TODO maanantaina
-  return []
+) -> List[VariableTrace]:
+  seeds = list(n.value for n in find_nodes(tree, ['Constant']))
+  return list(VariableTrace(type, call, e, seeds) for e in ins.data.elements_for_types('variable'))

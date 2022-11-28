@@ -1,6 +1,6 @@
 from typing import Any
 
-PRIMITIVES = (bool, int, float, complex, str, type(None))
+PRIMITIVES = (bool, int, float, str, type(None))
 
 def _primitive(value: Any) -> Any:
   return value if type(value) in PRIMITIVES else f'Ref:{id(value)}'
@@ -17,7 +17,7 @@ def _print(value: Any) -> Any:
     return 'True' if value else 'False'
   return f'"{str(value)}"'
 
-def print_primitive(value: Any) -> str:
+def primitive_to_str(value: Any) -> str:
   if type(value) in (list, tuple):
-    return f'[{", ".join(_print(v) for v in value)}]'
+    return ", ".join(_print(v) for v in value)
   return _print(value)

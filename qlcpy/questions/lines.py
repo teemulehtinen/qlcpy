@@ -42,6 +42,7 @@ class VariableDeclaration(QLCPrepared):
   def make(self):
     decl = self.variable.declaration
     refs = self.variable.references
+    # NOTE: if-else structures can easily assign 1st time on 2nd store name, what to do?
     if decl is None or len(refs) == 0:
       return None
     ref = random.choice(refs)

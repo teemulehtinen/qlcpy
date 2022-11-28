@@ -3,7 +3,7 @@ from typing import Any, List
 from . import en, fi
 
 # No languages implemented
-locale = 'fi'
+lang = 'en'
 
 texts = {
   'en': en.texts,
@@ -11,7 +11,7 @@ texts = {
 }
 
 def t(key: str, *args: Any) -> str:
-  txt = texts[locale][key]
+  txt = texts[lang][key]
   if callable(txt):
     return txt(*args)
   return txt

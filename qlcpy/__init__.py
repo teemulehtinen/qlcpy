@@ -2,6 +2,7 @@ import argparse
 import ast
 import json
 
+from . import i18n
 from .generator import generate, QLCRequest, QLC
 from .questions import TEMPLATES
 
@@ -15,6 +16,7 @@ def main():
   parser.add_argument('-n', default=3, help='Number of questions (at maximum)')
   parser.add_argument('-t', '--types', nargs='+', help='Only these question types')
   parser.add_argument('-u', '--unique', action='store_true', help='Only unique question types')
+  parser.add_argument('-l', '--lang', help='Language code for the text (en, fi)')
   parser.add_argument('--json', action='store_true', help='Print question data as JSON')
   parser.add_argument('--list-types', action='store_true', help='List available question types')
   args = parser.parse_args()
@@ -30,6 +32,9 @@ def main():
     parser.exit()
   with open(args.program, 'r') as f:
     tree = ast.parse(f.read())
+
+  if args.lang:
+    i18n.lang = args.lang
 
   qlcs = generate(
     tree,

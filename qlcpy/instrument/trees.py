@@ -1,7 +1,7 @@
 from ast import AST, Call, Constant, Expr, List as AstList, Load, Name, Try
 from typing import Any, List, Optional, Tuple
 
-from .primitives import as_primitive
+from ..primitives import as_primitive
 
 NodeStack = List[Tuple[AST, str]]
 

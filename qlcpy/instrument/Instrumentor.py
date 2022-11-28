@@ -1,9 +1,7 @@
-import json
-from collections import defaultdict
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional
 
+from ..primitives import as_primitive
 from .ProgramData import ProgramData
-from .primitives import as_primitive
 
 class Instrumentor:
 
