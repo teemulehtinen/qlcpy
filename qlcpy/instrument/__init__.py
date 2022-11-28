@@ -1,7 +1,6 @@
-import io
-import sys
 from ast import AST, parse
 from typing import List, Optional
+from unittest import mock
 
 from .ProgramData import ProgramData
 from .WalkNames import WalkNames
@@ -23,9 +22,8 @@ def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
 
 def run(transformed: AST, data: ProgramData, input: Optional[str]) -> None:
   instrumentor = Instrumentor(data)
-  if not input is None:
-    sys.stdin = io.StringIO(input)
-  exec(compile(transformed, '<string>', 'exec'), { INSTRUMENT_NAME: instrumentor })
+  with mock.patch('builtins.input', side_effect=(input or '').split('\n')):
+    exec(compile(transformed, '<string>', 'exec'), { INSTRUMENT_NAME: instrumentor })
   return instrumentor
 
 def run_with_instrumentor(

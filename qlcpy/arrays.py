@@ -44,7 +44,6 @@ def random_steps(a: List[Any], seeds: List[Any]) -> List[List[Any]]:
         reversed(a),
         reversed(a)[:-1],
         list(_changed_element(a[i], a[i + 1]) for i in range(len(a) - 1)),
-        []
       ]
     typ = _detect_type(a)
     step = min(_to_numeric(a[1]) - _to_numeric(a[0]), 10)
@@ -54,6 +53,7 @@ def random_steps(a: List[Any], seeds: List[Any]) -> List[List[Any]]:
       list(_craft_to_type(beg0 + i * 2 * step, typ) for i in range(len(a))),
       list(_craft_to_type(beg1 - i * step, typ) for i in range(len(a) - 1)),
       list(_craft_to_type(beg1 + i * step, typ) for i in range(len(a) - 1)),
-      [],
     ]
-  return [*[[r] for r in random.sample(seeds, 4)], []]
+  vals = list(set(r for r in seeds if type(r) != str or len(r) < 10))
+  vals.extend(random.randint(0, 10) for i in range(5 - len(vals)))
+  return vals

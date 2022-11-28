@@ -7,12 +7,12 @@ from .questions import TEMPLATES, QLCTemplate
 from .instrument import run_with_instrumentor, parse_body
 
 def select_templates(req: List[QLCRequest]) -> List[QLCTemplate]:
-  select: Set[QLCTemplate] = set()
+  select: Set[str] = set()
   for r in req:
     if r.types is None:
       return TEMPLATES
     select.update(r.types)
-  return list(t for t in TEMPLATES if t in select)
+  return list(t for t in TEMPLATES if t.type in select)
 
 def generate(
   src: str,

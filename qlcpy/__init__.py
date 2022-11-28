@@ -6,6 +6,9 @@ from . import i18n
 from .generator import generate, QLCRequest, QLC
 from .questions import TEMPLATES
 
+def cmd_string(str):
+  return str.replace('\\n', '\n')
+
 def main():
   parser = argparse.ArgumentParser(
     description='QLCpy generates questions that target analysed facts about the given program'
@@ -39,8 +42,8 @@ def main():
   qlcs = generate(
     tree,
     [QLCRequest(args.n, types=args.types, unique_types=args.unique)],
-    args.call,
-    args.input
+    cmd_string(args.call),
+    cmd_string(args.input)
   )
 
   if args.json:

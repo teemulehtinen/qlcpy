@@ -13,6 +13,16 @@ class QLCRequest:
     self.types = types
     self.unique_types = unique_types
 
+  def __repr__(self) -> str:
+    txt = [f'count={self.count}']
+    if self.fill:
+      txt.append('filled')
+    if self.types:
+      txt.append(f'types=[{", ".join(self.types)}]')
+    if self.unique_types:
+      txt.append('unique')
+    return f'<{" ".join(txt)}>'
+
 class QLCOption:
   def __init__(self, type: str, answer: Any, correct: bool = False, info: str = None):
     self.type = type

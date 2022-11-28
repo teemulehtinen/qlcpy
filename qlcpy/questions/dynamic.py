@@ -60,7 +60,11 @@ class VariableTrace(QLCPrepared):
       ),
       pick_options(
         options([primitive_to_str(vals)], 'correct_trace', t('o_variable_trace_correct'), True),
-        options([primitive_to_str(vals[:-1])], 'miss_value', t('o_variable_trace_miss')),
+        options(
+          [primitive_to_str(vals[:-1])] if len(vals) > 1 else [],
+          'miss_value',
+          t('o_variable_trace_miss')
+        ),
         fill_random_options(
           4,
           [primitive_to_str(a) for a in random_steps(vals, self.seeds)],
