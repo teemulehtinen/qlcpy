@@ -1,4 +1,5 @@
 from ast import AST, parse
+from io import StringIO
 from typing import List, Optional
 from unittest import mock
 
@@ -22,7 +23,9 @@ def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
 
 def run(transformed: AST, data: ProgramData, input: Optional[str]) -> None:
   instrumentor = Instrumentor(data)
-  with mock.patch('builtins.input', side_effect=(input or '').split('\n')):
+  with mock.patch('builtins.input', side_effect=(input or '').split('\n')) as input, \
+      mock.patch('sys.stdout', new_callable=StringIO) as output, \
+      mock.patch('sys.stderr', new_callable=StringIO) as errors:
     exec(compile(transformed, '<string>', 'exec'), { INSTRUMENT_NAME: instrumentor })
   return instrumentor
 

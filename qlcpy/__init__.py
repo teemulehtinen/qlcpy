@@ -6,8 +6,9 @@ from . import i18n
 from .generator import generate, QLCRequest, QLC
 from .questions import TEMPLATES
 
-def cmd_string(str):
-  return str.replace('\\n', '\n')
+def _read_file(name):
+  with open(name, 'r') as f:
+    return f.read()
 
 def main():
   parser = argparse.ArgumentParser(
@@ -15,7 +16,7 @@ def main():
   )
   parser.add_argument('program', nargs='?', default=None, help='A python program file')
   parser.add_argument('-c', '--call', help='A python call to execute')
-  parser.add_argument('-i', '--input', help='Use as stdio when executing')
+  parser.add_argument('-i', '--input', help='A text file to use as stdin')
   parser.add_argument('-n', default=3, help='Number of questions (at maximum)')
   parser.add_argument('-t', '--types', nargs='+', help='Only these question types')
   parser.add_argument('-u', '--unique', action='store_true', help='Only unique question types')
@@ -42,8 +43,8 @@ def main():
   qlcs = generate(
     tree,
     [QLCRequest(args.n, types=args.types, unique_types=args.unique)],
-    cmd_string(args.call),
-    cmd_string(args.input)
+    args.call,
+    _read_file(args.input) if args.input else ""
   )
 
   if args.json:
