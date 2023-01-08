@@ -37,6 +37,7 @@ texts = {
       f'when running <em>{call}</em>?'
     ),
   'o_loop_count_correct': 'Correct, this is the number of times the loop executed.',
+  'o_loop_count_one_off': 'This number is off by one.',
   'o_loop_count_random': 'This is an incorrect, random number.',
 
   'q_variable_trace':

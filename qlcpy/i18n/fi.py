@@ -37,6 +37,7 @@ texts = {
       f'kun ajetaan <em>{call}</em>?'
     ),
   'o_loop_count_correct': 'Oikein, näin monta kertaa toisto tapahtui',
+  'o_loop_count_one_off': 'Tämä lukumäärä heittää yhdellä oikeasta.',
   'o_loop_count_random': 'Tämä on satunnainen väärä lukumäärä',
 
   'q_variable_trace':

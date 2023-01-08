@@ -6,7 +6,7 @@ from ..i18n import t
 from ..instrument import Instrumentor, ProgramData
 from ..models import QLC, QLCPrepared
 from ..primitives import includes_references, primitives_to_str
-from .options import pick_options, options, fill_options, random_order
+from .options import pick_options, options, take_options, fill_options, random_order
 
 class LoopCount(QLCPrepared):
   def __init__(
@@ -14,16 +14,18 @@ class LoopCount(QLCPrepared):
     pos: int,
     type: str,
     call: Optional[str],
-    element: ProgramData.Element
+    element: ProgramData.Element,
+    scope: ProgramData.Element,
   ):
     super().__init__(pos, type)
     self.call = call
     self.loop = element
+    self.scope = scope
 
   def make(self):
-    count = sum(1 for b in self.loop.evaluations if b == 0)
-    if count > 10:
+    if len(self.scope.evaluations) > 1:
       return None
+    count = sum(1 for b in self.loop.evaluations if b == 0)
     return QLC(
       self.pos,
       self.type,
@@ -34,6 +36,7 @@ class LoopCount(QLCPrepared):
       ),
       pick_options(
         options([count], 'correct_count', t('o_loop_count_correct'), True),
+        options([count + 1], 'one_off_count', t('o_loop_count_one_off')),
         fill_options(
           4,
           random_order(range(10)),
@@ -51,7 +54,13 @@ def loop_count(
   ins: Instrumentor
 ) -> List[QLCPrepared]:
   return list(
-    LoopCount(pos, type, call, e) for e in ins.data.elements_for_types('loop')
+    LoopCount(
+      pos,
+      type,
+      call,
+      e,
+      ins.data.element_for_scope(e.scope),
+    ) for e in ins.data.elements_for_types('loop')
   )
 
 class VariableTrace(QLCPrepared):
