@@ -21,25 +21,35 @@ def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
 def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
   return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, add)
 
-def run(transformed: AST, data: ProgramData, input: Optional[str]) -> None:
+def run(
+  transformed: AST,
+  data: ProgramData,
+  input: Optional[str] = None,
+  run_main: bool = False,
+) -> None:
   instrumentor = Instrumentor(data)
+  locals = {
+    '__name__': '__main__' if run_main else 'builtins',
+    INSTRUMENT_NAME: instrumentor,
+  }
   with mock.patch('builtins.input', side_effect=(input or '').split('\n')) as input, \
       mock.patch('sys.stdout', new_callable=StringIO) as output, \
       mock.patch('sys.stderr', new_callable=StringIO) as errors:
-    exec(compile(transformed, '<string>', 'exec'), { INSTRUMENT_NAME: instrumentor })
+    exec(compile(transformed, '<string>', 'exec'), locals)
   return instrumentor
 
 def run_with_instrumentor(
   tree: AST,
   call: Optional[List[AST]] = None,
-  input: Optional[str] = None
+  input: Optional[str] = None,
+  run_main: bool = False,
 ) -> Instrumentor:
   data = collect_elements(tree)
   instrumented = transform(tree, data, call)
-  return run(instrumented, data, input)
+  return run(instrumented, data, input, run_main)
 
 def parse_body(call: Optional[str]):
   if call:
-    mod = parse(call)
+    mod = parse(call.replace('\\n', '\n'))
     return mod.body
   return None

@@ -54,6 +54,6 @@ while run:
   run = line != 'end'
 """
     )
-    instrumentor = run_with_instrumentor(tree, None, "line1\nline2\nend\n")
+    instrumentor = run_with_instrumentor(tree, input="line1\nline2\nend\n")
     line = instrumentor.data.element_for_id('line')
     self.assertEqual(line.values, ['line1', 'line2', 'end'])

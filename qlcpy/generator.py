@@ -18,10 +18,11 @@ def generate(
   src: str,
   requests: Optional[List[QLCRequest]] = None,
   call: Optional[str] = None,
-  input: Optional[str] = None
+  input: Optional[str] = None,
+  run_main: bool = False,
 ) -> List[QLC]:
   tree = ast.parse(src)
-  instrumentor = run_with_instrumentor(tree, parse_body(call), input)
+  instrumentor = run_with_instrumentor(tree, parse_body(call), input, run_main)
   prepared = list(
     p for t in select_templates(requests) for p in t.maker(t.type, tree, call, instrumentor)
   )

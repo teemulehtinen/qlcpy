@@ -15,6 +15,7 @@ def main():
     description='QLCpy generates questions that target analysed facts about the given program'
   )
   parser.add_argument('program', nargs='?', default=None, help='A python program file')
+  parser.add_argument('-m', '--main', action='store_true', help='Run with "__name__" = "__main__"')
   parser.add_argument('-c', '--call', help='A python call to execute')
   parser.add_argument('-i', '--input', help='A text file to use as stdin')
   parser.add_argument('-n', default=3, help='Number of questions (at maximum)')
@@ -33,9 +34,8 @@ def main():
 
   if not args.program:
     parser.print_usage()
-    parser.exit()
-  with open(args.program, 'r') as f:
-    tree = ast.parse(f.read())
+    parser.exit()  
+  tree = ast.parse(_read_file(args.program))
 
   if args.lang:
     i18n.lang = args.lang
@@ -43,8 +43,9 @@ def main():
   qlcs = generate(
     tree,
     [QLCRequest(args.n, types=args.types, unique_types=args.unique)],
-    args.call,
-    _read_file(args.input) if args.input else ""
+    call=args.call,
+    input=_read_file(args.input) if args.input else "",
+    run_main=args.main,
   )
 
   if args.json:
