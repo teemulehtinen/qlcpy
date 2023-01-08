@@ -9,8 +9,14 @@ from ..primitives import primitive_to_str
 from .options import pick_options, options, fill_random_options
 
 class LoopCount(QLCPrepared):
-  def __init__(self, type: str, call: Optional[str], element: ProgramData.Element):
-    super().__init__(type)
+  def __init__(
+    self,
+    pos: int,
+    type: str,
+    call: Optional[str],
+    element: ProgramData.Element
+  ):
+    super().__init__(pos, type)
     self.call = call
     self.loop = element
 
@@ -19,6 +25,7 @@ class LoopCount(QLCPrepared):
     if count > 10:
       return None
     return QLC(
+      self.pos,
       self.type,
       (
         t('q_loop_count_call', self.loop.declaration.lineno, self.call)
@@ -32,16 +39,26 @@ class LoopCount(QLCPrepared):
     )
 
 def loop_count(
+  pos: int,
   type: str,
   tree: AST,
   call: Optional[str],
   ins: Instrumentor
 ) -> List[QLCPrepared]:
-  return list(LoopCount(type, call, e) for e in ins.data.elements_for_types('loop'))
+  return list(
+    LoopCount(pos, type, call, e) for e in ins.data.elements_for_types('loop')
+  )
 
 class VariableTrace(QLCPrepared):
-  def __init__(self, type: str, call: Optional[str], element: ProgramData.Element, seeds: List[Any]):
-    super().__init__(type)
+  def __init__(
+    self,
+    pos: int,
+    type: str,
+    call: Optional[str],
+    element: ProgramData.Element,
+    seeds: List[Any]
+  ):
+    super().__init__(pos, type)
     self.call = call
     self.variable = element
     self.seeds = seeds
@@ -52,6 +69,7 @@ class VariableTrace(QLCPrepared):
     if decl is None or len(vals) > 5:
       return None
     return QLC(
+      self.pos,
       self.type,
       (
         t('q_variable_trace_call', decl.id, decl.lineno, self.call)
@@ -75,10 +93,14 @@ class VariableTrace(QLCPrepared):
     )
 
 def variable_trace(
+  pos: int,
   type: str,
   tree: AST,
   call: Optional[str],
   ins: Instrumentor
 ) -> List[VariableTrace]:
   seeds = list(n.value for n in find_nodes(tree, ['Constant']))
-  return list(VariableTrace(type, call, e, seeds) for e in ins.data.elements_for_types('variable'))
+  return list(
+    VariableTrace(pos, type, call, e, seeds)
+    for e in ins.data.elements_for_types('variable')
+  )

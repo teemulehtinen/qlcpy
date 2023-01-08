@@ -42,7 +42,8 @@ class QLCOption:
     return f'{"*" if self.correct  else " "} {self.answer}: {self.info} [{self.type}]'
 
 class QLC:
-  def __init__(self, type: str, question: str, options: List[QLCOption]):
+  def __init__(self, pos: int, type: str, question: str, options: List[QLCOption]):
+    self.pos = pos
     self.type = type
     self.question = question
     self.options = options
@@ -58,7 +59,8 @@ class QLC:
     return '\n'.join([f'{self.question} [{self.type}]', *[str(o) for o in self.options]])
 
 class QLCPrepared:
-  def __init__(self, type: str):
+  def __init__(self, pos: int, type: str):
+    self.pos = pos
     self.type = type
 
   def make(self) -> Optional[QLC]:

@@ -18,7 +18,7 @@ def main():
   parser.add_argument('-m', '--main', action='store_true', help='Run with "__name__" = "__main__"')
   parser.add_argument('-c', '--call', help='A python call to execute')
   parser.add_argument('-i', '--input', help='A text file to use as stdin')
-  parser.add_argument('-n', default=3, help='Number of questions (at maximum)')
+  parser.add_argument('-n', type=int, default=3, help='Number of questions (at maximum)')
   parser.add_argument('-t', '--types', nargs='+', help='Only these question types')
   parser.add_argument('-u', '--unique', action='store_true', help='Only unique question types')
   parser.add_argument('-l', '--lang', help='Language code for the text (en, fi)')

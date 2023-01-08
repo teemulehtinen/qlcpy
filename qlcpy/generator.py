@@ -24,7 +24,7 @@ def generate(
   tree = ast.parse(src)
   instrumentor = run_with_instrumentor(tree, parse_body(call), input, run_main)
   prepared = list(
-    p for t in select_templates(requests) for p in t.maker(t.type, tree, call, instrumentor)
+    p for t in select_templates(requests) for p in t.maker(t.pos, t.type, tree, call, instrumentor)
   )
   out: List[QLC] = []
   for r in requests:
@@ -42,4 +42,4 @@ def generate(
           continue
         out.append(qlc)
       n -= 1
-  return out
+  return sorted(out, key=lambda qlc: qlc.pos)

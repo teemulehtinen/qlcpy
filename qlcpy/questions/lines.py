@@ -8,14 +8,15 @@ from ..models import QLC, QLCPrepared
 from .options import pick_options, options, random_options, fill_random_options
 
 class LoopEnd(QLCPrepared):
-  def __init__(self, type: str, node: AST):
-    super().__init__(type)
+  def __init__(self, pos: int, type: str, node: AST):
+    super().__init__(pos, type)
     self.node = node
 
   def make(self):
     beg = self.node.lineno
     end = self.node.end_lineno
     return QLC(
+      self.pos,
       self.type,
       t('q_loop_end', beg),
       pick_options(
@@ -27,16 +28,19 @@ class LoopEnd(QLCPrepared):
     )
 
 def loop_end(
+  pos: int,
   type: str,
   tree: AST,
   call: Optional[str],
   ins: Instrumentor
 ) -> List[LoopEnd]:
-  return list(LoopEnd(type, node) for node in find_nodes(tree, ['For', 'While']))
+  return list(
+    LoopEnd(pos, type, node) for node in find_nodes(tree, ['For', 'While'])
+  )
 
 class VariableDeclaration(QLCPrepared):
-  def __init__(self, type: str, element: ProgramData.Element):
-    super().__init__(type)
+  def __init__(self, pos: int, type: str, element: ProgramData.Element):
+    super().__init__(pos, type)
     self.variable = element
   
   def make(self):
@@ -52,6 +56,7 @@ class VariableDeclaration(QLCPrepared):
       'Del': 'q_variable_del_declaration',
     }
     return QLC(
+      self.pos,
       self.type,
       t(text_id[ref.ctx.__class__.__name__], ref.id, ref.lineno),
       pick_options(
@@ -72,9 +77,12 @@ class VariableDeclaration(QLCPrepared):
     )
 
 def variable_declaration(
+  pos: int,
   type: str,
   tree: AST,
   call: Optional[str],
   ins: Instrumentor
 ) -> List[VariableDeclaration]:
-  return list(VariableDeclaration(type, e) for e in ins.data.elements_for_types('variable'))
+  return list(
+    VariableDeclaration(pos, type, e) for e in ins.data.elements_for_types('variable')
+  )
