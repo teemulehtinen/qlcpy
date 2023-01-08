@@ -1,5 +1,5 @@
 import random
-from typing import Any, Callable, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional
 
 from ..models import QLCOption
 
@@ -16,14 +16,15 @@ class QLCOptionRequest:
 
 def pick_options(*requests: QLCOptionRequest) -> List[QLCOption]:
   out: List[QLCOption] = []
+  answers: List[Any] = []
   for r in requests:
-    if not r.n is None and r.fill and len(out) >= r.n:
-      continue
-    opts = [o for o in r.opt if not o.answer in [u.answer for u in out]]
-    if r.n is None:
-      out.extend(opts)
-    else:
-      out.extend(random.sample(opts, min(max(0, r.n - len(out)) if r.fill else r.n, len(opts))))
+    target = 100 if r.n is None else (r.n if r.fill else len(out) + r.n)
+    for o in r.opt:
+      if len(out) >= target:
+        break
+      if not o.answer in answers:
+        answers.append(o.answer)
+        out.append(o)
   out_int = list(o for o in out if type(o.answer) == int)
   out_str = list(o for o in out if type(o.answer) != int)
   return [
@@ -47,7 +48,7 @@ def options(
 ) -> QLCOptionRequest:
   return QLCOptionRequest(opt(answers, type, info, correct))
 
-def random_options(
+def take_options(
   count: int,
   answers: Iterable[Any],
   type: str,
@@ -56,7 +57,7 @@ def random_options(
 ) -> QLCOptionRequest:
   return QLCOptionRequest(opt(answers, type, info, correct), count)
 
-def fill_random_options(
+def fill_options(
   count: int,
   answers: Iterable[Any],
   type: str,
@@ -64,3 +65,7 @@ def fill_random_options(
   correct: Optional[bool] = False
 ) -> QLCOptionRequest:
   return QLCOptionRequest(opt(answers, type, info, correct), count, True)
+
+def random_order(answers: Iterable[Any]) -> Iterable[Any]:
+  mix_answers = list(answers)
+  return random.sample(mix_answers, len(mix_answers))

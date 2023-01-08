@@ -1,6 +1,6 @@
 from typing import Any, Iterable, List, Optional
 
-from ..primitives import as_primitive
+from ..primitives import Primitive
 from .ProgramData import ProgramData
 
 class Instrumentor:
@@ -11,9 +11,9 @@ class Instrumentor:
 
   def val(self, target: Optional[int], value: Any) -> None:
     if target is None:
-      self.errors.append(f'Assignment of "{as_primitive(value)}" to unknown variable')
+      self.errors.append(f'Assignment of {Primitive(value)} to unknown variable')
     else:
-      self.data.element_n(target).value(as_primitive(value))
+      self.data.element_n(target).value(Primitive(value))
 
   def eval(self, target: Optional[int], branch: int) -> None:
     if target is None:

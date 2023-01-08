@@ -1,5 +1,6 @@
 from ast import AST
 from typing import Any, List, Optional
+from ..primitives import Primitive
 
 class ProgramData:
 
@@ -12,7 +13,7 @@ class ProgramData:
 			self.declaration = declaration
 			self.container_scope = None
 			self.references: List[AST] = []
-			self.values: List[Any] = []
+			self.values: List[Primitive] = []
 			self.evaluations: List[int] = []
 
 		def set_container_scope(self, scope: int) -> None:
@@ -21,7 +22,7 @@ class ProgramData:
 		def reference(self, node: AST) -> None:
 			self.references.append(node)
 		
-		def value(self, value: Any) -> None:
+		def value(self, value: Primitive) -> None:
 			self.values.append(value)
 
 		def evaluation(self, branch: int) -> None:

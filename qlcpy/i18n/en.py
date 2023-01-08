@@ -49,7 +49,20 @@ texts = {
       f'Line {line} declares a variable named <em>{id}</em>. Which values and in which '
       f'order are assigned to the variable when running <em>{call}</em>?'
     ),
-  'o_variable_trace_correct': 'Correct, these values where assigned in this order to the variable.',
+  'o_variable_trace_correct': 'Correct, these values were assigned in this order to the variable.',
   'o_variable_trace_miss': 'This sequence is missing a value that was assigned to the variable.',
   'o_variable_trace_random': 'This is an incorrect, random sequence of values.',
+
+  'q_variable_trace_start':
+    lambda id, line: (
+      f'Line {line} declares a variable named <em>{id}</em>. Which are the first 4 values '
+      'that are assigned to the variable in the given order when the program is run?'
+    ),
+  'q_variable_trace_start_call':
+    lambda id, line, call: (
+      f'Line {line} declares a variable named <em>{id}</em>. Which are the first 4 values '
+      f'that are assigned to the variable in the given order when running <em>{call}</em>?'
+    ),
+  'o_variable_trace_start_correct': 'Correct, these 4 values where first assigned in this order to the variable.',
+  'o_variable_trace_start_random': 'This is an incorrect, random sequence of values.',
 }

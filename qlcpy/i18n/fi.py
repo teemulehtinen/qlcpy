@@ -52,4 +52,17 @@ texts = {
   'o_variable_trace_correct': 'Oikein, nämä arvot sijoitettiin tässä järjestyksessä muuttujaan.',
   'o_variable_trace_miss': 'Tästä sarjasta puuttuu muuttujaan sijoitettu arvo.',
   'o_variable_trace_random': 'Tämä on satunnainen väärä arvojen sarja.',
+
+  'q_variable_trace_start':
+    lambda id, line: (
+      f'Rivillä {line} määritellään muuttuja <em>{id}</em>. Mitkä ovat 4 ensimmäistä arvoa, '
+      'jotka siihen sijoitetaan annetussa järjestyksessä, kun ohjelma ajetaan?'
+    ),
+  'q_variable_trace_start_call':
+    lambda id, line, call: (
+      f'Rivillä {line} määritellään muuttuja <em>{id}</em>. Mitkä ovat 4 ensimmäistä arvoa, '
+      f'jotka siihen sijoitetaan annetussa järjestyksessä, kun ajetaan <em>{call}</em>?'
+    ),
+  'o_variable_trace_start_correct': 'Oikein, ensimmäiseksi muuttujaan sijoitettiin nämä 4 arvoa tässä järjestyksessä.',
+  'o_variable_trace_start_random': 'Tämä on satunnainen väärä arvojen sarja.',
 }

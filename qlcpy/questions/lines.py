@@ -5,7 +5,7 @@ from typing import List, Optional
 from ..i18n import t
 from ..instrument import find_nodes, Instrumentor, ProgramData
 from ..models import QLC, QLCPrepared
-from .options import pick_options, options, random_options, fill_random_options
+from .options import pick_options, options, take_options, fill_options, random_order
 
 class LoopEnd(QLCPrepared):
   def __init__(self, pos: int, type: str, node: AST):
@@ -23,7 +23,12 @@ class LoopEnd(QLCPrepared):
         options([end], 'last_line_inside_block', t('o_loop_end_correct'), True),
         options([max(1, beg - 1)], 'line_before_block', t('o_loop_end_before')),
         options([end + 1], 'line_after_block', t('o_loop_end_after')),
-        fill_random_options(4, range(beg + 1, end), 'line_inside_block', t('o_loop_end_inside'))
+        fill_options(
+          4,
+          random_order(range(beg + 1, end)),
+          'line_inside_block',
+          t('o_loop_end_inside')
+        )
       )
     )
 
@@ -61,15 +66,15 @@ class VariableDeclaration(QLCPrepared):
       t(text_id[ref.ctx.__class__.__name__], ref.id, ref.lineno),
       pick_options(
         options([decl.lineno], 'declaration_line', t('o_variable_declaration_correct'), True),
-        random_options(
+        take_options(
           2,
-          [r.lineno for r in refs],
+          random_order(r.lineno for r in refs),
           'reference_line',
           t('o_variable_declaration_reference')
         ),
-        fill_random_options(
+        fill_options(
           4,
-          range(max(1, decl.lineno - 2), max(r.lineno for r in refs) + 3),
+          random_order(range(max(1, decl.lineno - 2), max(r.lineno for r in refs) + 3)),
           'random_line',
           t('o_variable_declaration_random')
         )

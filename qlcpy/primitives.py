@@ -1,23 +1,29 @@
-from typing import Any
+from typing import Any, List, Set
 
-PRIMITIVES = (bool, int, float, str, type(None))
+class Primitive:
+  PRIMITIVE_TYPES = (bool, int, float, str, type(None))
 
-def _primitive(value: Any) -> Any:
-  return value if type(value) in PRIMITIVES else f'Ref:{id(value)}'
+  def __init__(self, value: Any):
+    if type(value) in self.PRIMITIVE_TYPES:
+      self.type = type(value)
+      self.value = value
+    else:
+      self.type = 'Reference'
+      self.value = id(value)
+  
+  def __repr__(self) -> str:
+    if self.type in (int, float):
+      return f'{self.value}'
+    if self.type == str:
+      return f'"{self.value}"'
+    if self.type == bool:
+      return 'True' if self.value else 'False'
+    if self.type == type(None):
+      return 'None'
+    return f'Reference[{self.value}]'
 
-def as_primitive(value: Any) -> Any:
-  if type(value) in (list, tuple):
-    return list(_primitive(v) for v in value)
-  return _primitive(value)
+def primitives_to_str(values: List[Primitive]) -> str:
+  return ", ".join(str(v) for v in values)
 
-def _print(value: Any) -> Any:
-  if type(value) in (int, float):
-    return f'{value}'
-  if type(value) == bool:
-    return 'True' if value else 'False'
-  return f'"{str(value)}"'
-
-def primitive_to_str(value: Any) -> str:
-  if type(value) in (list, tuple):
-    return ", ".join(_print(v) for v in value)
-  return _print(value)
+def includes_references(values: List[Primitive]) -> bool:
+  return any(v.type == 'Reference' for v in values)
