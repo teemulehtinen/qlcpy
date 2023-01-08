@@ -81,7 +81,7 @@ class VariableTrace(QLCPrepared):
       or len(self.scope.evaluations) > 1
     ):
       return None  
-    if len(vals) > 6:
+    if len(vals) > 8:
       return QLC(
         self.pos,
         self.type,

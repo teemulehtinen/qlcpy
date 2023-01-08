@@ -9,7 +9,7 @@ def altered_arrays(
 ) -> List[Primitive]:
   distractors = list(o for o in other if len(o) >= len(a)) or a
   altered = [
-    reversed(a),
+    list(reversed(a)),
     random.sample(a, len(a)),
     random.sample(a, len(a)),
     random.sample(random.choice(distractors), len(a)),
