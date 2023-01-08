@@ -70,6 +70,13 @@ class ProgramData:
 		for el in self.elements:
 			if el.id == id:
 				return el
+		return None
 	
+	def element_for_scope(self, scope: int) -> Element:
+		for el in self.elements:
+			if el.container_scope == scope:
+				return el
+		return None
+
 	def __repr__(self) -> str:
 		return '\n'.join(str(el) for el in self.elements)

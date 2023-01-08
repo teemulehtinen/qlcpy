@@ -61,19 +61,26 @@ class VariableTrace(QLCPrepared):
     type: str,
     call: Optional[str],
     element: ProgramData.Element,
+    scope: ProgramData.Element,
     all: List[ProgramData.Element]
   ):
     super().__init__(pos, type)
     self.call = call
     self.variable = element
+    self.scope = scope
     self.all = all
   
   def make(self):
     decl = self.variable.declaration
     vals = self.variable.values
     other = [o.values for o in self.all if o != self.variable]
-    if decl is None or len(vals) < 2 or includes_references(vals):
-      return None
+    if (
+      decl is None
+      or len(vals) < 2
+      or includes_references(vals)
+      or len(self.scope.evaluations) > 1
+    ):
+      return None  
     if len(vals) > 6:
       return QLC(
         self.pos,
@@ -132,4 +139,13 @@ def variable_trace(
   ins: Instrumentor
 ) -> List[VariableTrace]:
   vars = list(ins.data.elements_for_types(['variable']))
-  return list(VariableTrace(pos, type, call, v, vars) for v in vars)
+  return list(
+    VariableTrace(
+      pos,
+      type,
+      call,
+      v,
+      ins.data.element_for_scope(v.scope),
+      vars
+    ) for v in vars
+  )
