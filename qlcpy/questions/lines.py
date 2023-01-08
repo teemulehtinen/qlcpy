@@ -28,7 +28,8 @@ class LoopEnd(QLCPrepared):
           random_order(range(beg + 1, end)),
           'line_inside_block',
           t('o_loop_end_inside')
-        )
+        ),
+        fill_options(4, [end + 2], 'line_after_block', t('o_loop_end_after'))
       )
     )
 
