@@ -50,6 +50,6 @@ def run_with_instrumentor(
 
 def parse_body(call: Optional[str]):
   if call:
-    mod = parse(call.replace('\\n', '\n'))
+    mod = parse(call)
     return mod.body
   return None

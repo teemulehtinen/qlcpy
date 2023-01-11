@@ -20,11 +20,15 @@ def generate(
   call: Optional[str] = None,
   input: Optional[str] = None,
   run_main: bool = False,
+  silent_call: bool = False,
 ) -> List[QLC]:
   tree = ast.parse(src)
+  call = call.replace('\\n', '\n') if call else None
   instrumentor = run_with_instrumentor(tree, parse_body(call), input, run_main)
   prepared = list(
-    p for t in select_templates(requests) for p in t.maker(t.pos, t.type, tree, call, instrumentor)
+    p
+    for t in select_templates(requests)
+    for p in t.maker(t.pos, t.type, tree, None if silent_call else call, instrumentor)
   )
   out: List[QLC] = []
   for r in requests:

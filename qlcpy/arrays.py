@@ -7,7 +7,7 @@ def altered_arrays(
   other: List[List[Primitive]],
   fix_len: bool = False
 ) -> List[Primitive]:
-  distractors = list(o for o in other if len(o) >= len(a)) or a
+  distractors = list(o for o in other if len(o) >= len(a)) or [a]
   altered = [
     list(reversed(a)),
     random.sample(a, len(a)),
