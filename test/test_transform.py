@@ -2,6 +2,7 @@ import ast
 import unittest
 
 from qlcpy.instrument import collect_elements, transform, run_with_instrumentor, parse_body
+from qlcpy.primitives import Primitive
 
 class TestTransform(unittest.TestCase):
 

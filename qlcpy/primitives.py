@@ -21,6 +21,11 @@ class Primitive:
     if self.type == type(None):
       return 'None'
     return f'Reference[{self.value}]'
+  
+  def __eq__(self, other) -> bool:
+    if self.type == 'Reference':
+      return self.value == id(other)
+    return self.value == other
 
 def primitives_to_str(values: List[Primitive]) -> str:
   return ", ".join(str(v) for v in values)

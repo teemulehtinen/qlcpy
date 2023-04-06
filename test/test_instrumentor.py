@@ -16,11 +16,11 @@ class TestInstrumentor(unittest.TestCase):
     self.assertEqual(self.data.element_n(0).values, [7])
 
   def test_two_assignments(self) -> None:
-    a = self.ins.assignment([0], [1])
-    self.assertEqual(a, [1])
-    a = self.ins.assignment([0], [1, 2])
-    self.assertEqual(a, [1, 2])
-    self.assertEqual(self.data.element_n(0).values, [[1], [1, 2]])
+    a = self.ins.assignment([0], 1)
+    self.assertEqual(a, 1)
+    a = self.ins.assignment([0], 10)
+    self.assertEqual(a, 10)
+    self.assertEqual(self.data.element_n(0).values, [1, 10])
 
   def test_unpack_assignment(self) -> None:
     a, b = self.ins.assignment([0, 1], (3, 4))
