@@ -3,7 +3,7 @@ from typing import Callable, List, Optional
 
 from ..instrument import Instrumentor
 from ..models import QLCPrepared
-from . import lines, dynamic
+from . import names, lines, dynamic
 
 QLCMaker = Callable[[str, AST, Optional[str], Instrumentor], List[QLCPrepared]]
 
@@ -17,24 +17,30 @@ class QLCTemplate:
 TEMPLATES: List[QLCTemplate] = [
   QLCTemplate(
     0,
+    'VariableNames',
+    'The variable names',
+    names.variable_names,
+  ),
+  QLCTemplate(
+    1,
     'LoopEnd',
     'The last line of a loop',
     lines.loop_end
   ),
   QLCTemplate(
-    1,
+    2,
     'VariableDeclaration',
     'The declaration line for a variable',
     lines.variable_declaration
   ),
   QLCTemplate(
-    2,
+    3,
     'LoopCount',
     'The number of times that a loop was evaluated',
     dynamic.loop_count
   ),
   QLCTemplate(
-    3,
+    4,
     'VariableTrace',
     'The values that were assigned to a variable',
     dynamic.variable_trace

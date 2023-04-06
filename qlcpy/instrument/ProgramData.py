@@ -1,5 +1,5 @@
 from ast import AST
-from typing import Any, List, Optional
+from typing import Iterator, List, Optional
 from ..primitives import Primitive
 
 class ProgramData:
@@ -61,7 +61,7 @@ class ProgramData:
 				return i, el
 		return None, None
 	
-	def elements_for_types(self, types: List[str]) -> List[Element]:
+	def elements_for_types(self, types: List[str]) -> Iterator[Element]:
 		for el in self.elements:
 			if el.type in types:
 				yield el

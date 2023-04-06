@@ -1,4 +1,10 @@
 texts = {
+  'q_variable_names': 'Which of the following are variable names in the program?',
+  'o_variable_name': 'A variable in the program',
+  'o_reserved_word': 'A reserved word in programming language',
+  'o_built_in_function': 'A function that is built in to programming language',
+  'o_unused_word': 'This word was not used in the program',
+
   'q_loop_end':
     lambda line: f'A program loop starts on line {line}. Which is the last line inside it?',
   'o_loop_end_correct': 'Correct, this is the last line inside the loop',

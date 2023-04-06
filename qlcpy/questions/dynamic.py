@@ -60,7 +60,7 @@ def loop_count(
       call,
       e,
       ins.data.element_for_scope(e.scope),
-    ) for e in ins.data.elements_for_types('loop')
+    ) for e in ins.data.elements_for_types(['loop'])
   )
 
 class VariableTrace(QLCPrepared):

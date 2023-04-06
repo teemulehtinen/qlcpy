@@ -1,4 +1,10 @@
 texts = {
+  'q_variable_names': 'Mitkä seuraavista ovat muuttujien nimiä ohjelmassa?',
+  'o_variable_name': 'Muuttuja tässä ohjelmassa',
+  'o_reserved_word': 'Varattu sana ohjelmointikielessä',
+  'o_built_in_function': 'Funktio, joka on määritelty ohjelmointikielen sisään',
+  'o_unused_word': 'Käyttämätön sana tässä ohjelmassa',
+
   'q_loop_end':
     lambda line: f'Toistorakenne alkaa riviltä {line}. Mikä on viimeinen rivi sen sisällä?',
   'o_loop_end_correct': 'Oikein, tämä on viimeinen rivi toistorakenteen sisällä',

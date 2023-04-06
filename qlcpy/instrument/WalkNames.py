@@ -16,6 +16,11 @@ class WalkNames(WalkAST):
 		ExceptHandler: 'except', Raise: 'raise', FunctionDef: 'def',
 		Delete: 'del', Return: 'return', Break: 'break', Continue: 'continue',
 	}
+	COMMON_BUILTIN_IDS: List[str] = [
+		'abs','all','any','bool','dict','float','input','int','len','list',
+  	'max','min','object','open','print','range','reversed','round','set',
+  	'sorted','sum','tuple','zip'
+	]
 
 	class Scope(dict):
 		def __init__(self, id: int, names: Optional[ScopeNames] = None) -> None:
@@ -59,7 +64,11 @@ class WalkNames(WalkAST):
 		elif type(node.ctx) == Load:
 			el = self.scopes[-1].get(node.id, None)
 			if el is None:
-				el = self.record_name('unknown', node.id, None)
+				el = self.record_name(
+					'builtin' if node.id in self.COMMON_BUILTIN_IDS else 'unknown',
+					node.id,
+					None
+				)
 			el.reference(node)
 
 	def enter_FunctionDef(self, stack: NodeStack, node: AST) -> None:

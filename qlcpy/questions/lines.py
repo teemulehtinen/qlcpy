@@ -90,5 +90,5 @@ def variable_declaration(
   ins: Instrumentor
 ) -> List[VariableDeclaration]:
   return list(
-    VariableDeclaration(pos, type, e) for e in ins.data.elements_for_types('variable')
+    VariableDeclaration(pos, type, e) for e in ins.data.elements_for_types(['variable'])
   )
