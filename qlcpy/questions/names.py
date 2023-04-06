@@ -15,6 +15,8 @@ class VariableNames(QLCPrepared):
 
   def make(self):
     vars = list(self.data.elements_for_types(['variable']))
+    if len(vars) == 0:
+      return None
     kws = list(self.data.elements_for_types(['keyword']))
     bis = list(self.data.elements_for_types(['builtin']))
     uws = [w for w in WORD_LIST if self.data.element_for_id(w) is None]
@@ -36,6 +38,4 @@ def variable_names(pos: int,
   call: Optional[str],
   ins: Instrumentor
 ) -> List[VariableNames]:
-  if len(list(ins.data.elements_for_types(['variable']))) > 0:
-    return [VariableNames(pos, type, ins.data)]
-  return []
+  return [VariableNames(pos, type, ins.data)]

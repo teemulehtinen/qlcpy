@@ -20,12 +20,12 @@ texts = {
   'q_variable_read_declaration':
     lambda id, line: (
       f'Muuttujasta <em>{id}</em> luetaan arvo rivillä {line}. '
-      f'Millä rivillä <em>{id}</em> luodaan?',
+      f'Millä rivillä <em>{id}</em> luodaan?'
     ),
   'q_variable_del_declaration':
     lambda id, line: (
       f'Muuttuja <em>{id}</em> poistetaan rivillä {line}. '
-      f'Millä rivillä <em>{id}</em> luodaan?',
+      f'Millä rivillä <em>{id}</em> luodaan?'
     ),
   'o_variable_declaration_correct': 'Oikein, annettu muuttuja luodaan tällä rivillä.',
   'o_variable_declaration_reference':

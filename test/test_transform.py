@@ -21,7 +21,7 @@ class TestTransform(unittest.TestCase):
       list((e.scope, e.id) for e in data.elements_for_types(['argument', 'variable'])),
       [
         (1, 'words_list'), (1, 'initial'), (1, 'i'),
-        (2, 'words_list'), (2, 'initial'), (2, 'i')
+        (2, 'words_list'), (2, 'initial'), (2, 'j')
       ]
     )
   

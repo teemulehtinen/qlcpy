@@ -20,12 +20,12 @@ texts = {
   'q_variable_read_declaration':
     lambda id, line: (
       f'A value is accessed from variable <em>{id}</em> on line {line}. '
-      f'On which line is <em>{id}</em> created?',
+      f'On which line is <em>{id}</em> created?'
     ),
   'q_variable_del_declaration':
     lambda id, line: (
       f'Variable <em>{id}</em> is deleted on line {line}. '
-      f'On which line is <em>{id}</em> created?',
+      f'On which line is <em>{id}</em> created?'
     ),
   'o_variable_declaration_correct': 'Correct, this is the line where the variable is created.',
   'o_variable_declaration_reference':
