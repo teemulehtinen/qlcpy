@@ -32,7 +32,8 @@ class TestQuestions(unittest.TestCase):
 
   def test_except_source(self):
     qlc = self._gen_a_qlc('ExceptSource')
-    print(qlc)
+    for o in qlc.options:
+      self.assertEqual(o.correct, o.answer == 18)
 
   def test_loop_count(self):
     qlc = self._gen_a_qlc('LoopCount')

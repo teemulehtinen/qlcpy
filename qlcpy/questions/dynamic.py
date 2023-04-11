@@ -6,7 +6,7 @@ from ..i18n import t
 from ..instrument import Instrumentor, ProgramData
 from ..models import QLC, QLCPrepared
 from ..primitives import includes_references, primitives_to_str
-from .options import pick_options, options, take_options, fill_options, random_order
+from .options import pick_options, options, fill_options
 
 class LoopCount(QLCPrepared):
   def __init__(
@@ -37,12 +37,7 @@ class LoopCount(QLCPrepared):
       pick_options(
         options([count], 'correct_count', t('o_loop_count_correct'), True),
         options([count + 1], 'one_off_count', t('o_loop_count_one_off')),
-        fill_options(
-          4,
-          random_order(range(10)),
-          'random_count',
-          t('o_loop_count_random')
-        ),
+        fill_options(4, range(10), 'random_count', t('o_loop_count_random')),
       )
     )
 
@@ -110,7 +105,7 @@ class VariableTrace(QLCPrepared):
             4,
             [
               f'{primitives_to_str(a)}, ...'
-              for a in random_order(altered_arrays(vals[:4], other, True))
+              for a in altered_arrays(vals[:4], other, True)
             ],
             'random_values',
             t('o_variable_trace_start_random')
@@ -132,7 +127,7 @@ class VariableTrace(QLCPrepared):
           4,
           [
             primitives_to_str(a)
-            for a in random_order(altered_arrays(vals, other))
+            for a in altered_arrays(vals, other)
           ],
           'random_values',
           t('o_variable_trace_random')

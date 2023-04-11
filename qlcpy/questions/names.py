@@ -4,7 +4,7 @@ from typing import List, Optional
 from ..i18n import t
 from ..instrument import Instrumentor, ProgramData
 from ..models import QLC, QLCPrepared
-from .options import pick_options, take_options, fill_options, random_order
+from .options import pick_options, take_options, fill_options
 
 WORD_LIST = ['total', 'other', 'foo', 'bar', 'n', 'tmp', 'magic', 'temp', 'important']
 
@@ -25,10 +25,10 @@ class VariableNames(QLCPrepared):
       self.type,
       t('q_variable_names'),
       pick_options(
-        take_options(2, random_order(e.id for e in vars), 'variable', t('o_variable_name'), True),
-        fill_options(3, random_order(e.id for e in kws), 'reserved_word', t('o_reserved_word')),
-        take_options(1, random_order(e.id for e in bis), 'builtin_function', t('o_built_in_function')),
-        fill_options(5, random_order(uws), 'unused_word', t('o_unused_word')),
+        take_options(2, [e.id for e in vars], 'variable', t('o_variable_name'), True),
+        fill_options(3, [e.id for e in kws], 'reserved_word', t('o_reserved_word')),
+        take_options(1, [e.id for e in bis], 'builtin_function', t('o_built_in_function')),
+        fill_options(5, uws, 'unused_word', t('o_unused_word')),
       )
     )
 
