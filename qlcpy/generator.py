@@ -7,6 +7,11 @@ from .questions import TEMPLATES, QLCTemplate
 from .instrument import run_with_instrumentor, parse_body
 
 def select_templates(req: List[QLCRequest]) -> List[QLCTemplate]:
+  available: List[str] = list(t.type for t in TEMPLATES)
+  for r in req:
+    for typ in (r.types or []):
+      if not typ in available:
+        raise ValueError(f'Uknown QLC type: {typ}')
   select: Set[str] = set()
   for r in req:
     if r.types is None:

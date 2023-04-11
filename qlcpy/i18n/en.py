@@ -32,6 +32,12 @@ texts = {
     f'This line references (reads or assigns) the given variable BUT it is created before',
   'o_variable_declaration_random': 'This is a random line that does not handle the given variable',
 
+  'q_except_source': lambda line: f'From which line program execution may continue to line {line}?',
+  'o_except_source': 'Correct, this line can raise an error of the expected type.',
+  'o_except_not_source': 'This line does NOT raise an error of the expected type.',
+  'o_except_try_line': 'At least the first line inside try-block starts executing.',
+  'o_except_outside_try': 'Except-block cannot be entered from outside the corresponding try-block.',
+
   'q_loop_count':
     lambda line: (
       f'Line {line} has a loop structure. How many times does the loop execute '

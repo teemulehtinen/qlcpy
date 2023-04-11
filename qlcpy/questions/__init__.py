@@ -35,12 +35,18 @@ TEMPLATES: List[QLCTemplate] = [
   ),
   QLCTemplate(
     3,
+    'ExceptSource',
+    'A potential line to raise an error for an except-block',
+    lines.except_source
+  ),
+  QLCTemplate(
+    4,
     'LoopCount',
     'The number of times that a loop was evaluated',
     dynamic.loop_count
   ),
   QLCTemplate(
-    4,
+    5,
     'VariableTrace',
     'The values that were assigned to a variable',
     dynamic.variable_trace

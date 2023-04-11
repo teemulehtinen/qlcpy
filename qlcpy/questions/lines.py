@@ -1,9 +1,9 @@
 import random
-from ast import AST
+from ast import AST, Set, Try
 from typing import List, Optional
 
 from ..i18n import t
-from ..instrument import find_nodes, Instrumentor, ProgramData
+from ..instrument import find_nodes, collect_error_causes, ExceptAndCauses, Instrumentor, ProgramData
 from ..models import QLC, QLCPrepared
 from .options import pick_options, options, take_options, fill_options, random_order
 
@@ -91,4 +91,64 @@ def variable_declaration(
 ) -> List[VariableDeclaration]:
   return list(
     VariableDeclaration(pos, type, e) for e in ins.data.elements_for_types(['variable'])
+  )
+
+class ExceptSource(QLCPrepared):
+  TARGETED = ['ZeroDivisionError', 'ValueError', 'IndexError']
+
+  class CandidateExcept():
+    def __init__(self, except_line: int, source_lines: List[int], distractor_lines: List[int]):
+      self.except_line = except_line
+      self.source_lines = source_lines
+      self.distractor_lines = distractor_lines
+
+  def __init__(self, pos: int, type: str, node: AST):
+    super().__init__(pos, type)
+    self.node: Try = node
+
+  def prepate_candidates(self, e: ExceptAndCauses) -> CandidateExcept:
+    target = list(c.line for c in e.causes if c.error in self.TARGETED)
+    if len(target) == 0:
+      return self.CandidateExcept(e.line, [], [])
+    reserved: Set[int] = set()
+    for c in e.causes:
+      reserved.update(range(c.line, c.end_line + 1))
+    body_lines = range(self.node.body[0].lineno, self.node.body[-1].end_lineno + 1)
+    return self.CandidateExcept(
+      e.line,
+      target,
+      set(body_lines) - reserved,
+    )
+
+  def make(self):
+    candidates = list(self.prepate_candidates(e) for e in collect_error_causes(self.node))
+    candidates = list(c for c in candidates if len(c.source_lines) > 0)
+    if len(candidates) == 0:
+      return None
+    case = sorted(candidates, key=lambda c: len(c.distractor_lines), reverse=True)[0]
+    beg = self.node.lineno
+    end = self.node.end_lineno
+    few_before = range(max(1, beg - 3), beg)
+    return QLC(
+      self.pos,
+      self.type,
+      t('q_except_source', case.except_line),
+      pick_options(
+        take_options(1, case.source_lines, 'source_line', t('o_except_source'), True),
+        options([beg], 'try_line', t('o_except_try_line')),
+        take_options(1, few_before, 'before_try_block', t('o_except_outside_try')),
+        fill_options(4, case.distractor_lines, 'not_source_line', t('o_except_not_source')),
+        fill_options(4, [end + 2], 'after_try_block', t('o_except_outside_try')),
+      )
+    )
+
+def except_source(
+    pos: int,
+    type: str,
+    tree: AST,
+    call: Optional[str],
+    ins: Instrumentor
+) -> List[ExceptSource]:
+  return list(
+    ExceptSource(pos, type, node) for node in find_nodes(tree, ['Try'])
   )

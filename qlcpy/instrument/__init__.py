@@ -1,4 +1,4 @@
-from ast import AST, parse
+from ast import AST, Try, parse
 from io import StringIO
 from typing import List, Optional
 from unittest import mock
@@ -6,6 +6,7 @@ from unittest import mock
 from .ProgramData import ProgramData
 from .WalkNames import WalkNames
 from .WalkFind import WalkFind
+from .WalkErrorCauses import WalkErrorCauses, ExceptAndCauses
 from .Instrumentor import Instrumentor
 from .TransformForInstrumentor import TransformForInstrumentor
 
@@ -17,6 +18,9 @@ def collect_elements(tree: AST) -> ProgramData:
 
 def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
   return WalkFind().walk(tree, class_names)
+
+def collect_error_causes(node: Try) -> List[ExceptAndCauses]:
+  return WalkErrorCauses.get_try_except_causes(node)
 
 def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
   return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, add)

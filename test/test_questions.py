@@ -9,8 +9,8 @@ class TestQuestions(unittest.TestCase):
       self.src = f.read()
     self.call = 'find_first_w(["lorem", "ipsum", "dolor", "sit", "amet"], "s")'
   
-  def _gen_a_qlc(self, type: str) -> QLC:
-    qlcs = generate(self.src, [QLCRequest(1, types=[type])], self.call)
+  def _gen_a_qlc(self, type: str, src: str = None, call: str = None) -> QLC:
+    qlcs = generate(self.src or self.src, [QLCRequest(1, types=[type])], call or self.call)
     self.assertEqual(len(qlcs), 1)
     return qlcs[0]
 
@@ -29,6 +29,10 @@ class TestQuestions(unittest.TestCase):
     d = 4 if '<em>i</em>' in qlc.question else 9
     for o in qlc.options:
       self.assertEqual(o.correct, o.answer == d)
+
+  def test_except_source(self):
+    qlc = self._gen_a_qlc('ExceptSource')
+    print(qlc)
 
   def test_loop_count(self):
     qlc = self._gen_a_qlc('LoopCount')

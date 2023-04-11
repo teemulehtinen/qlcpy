@@ -12,3 +12,10 @@ def find_first_w(words_list: List[str], initial: str) -> int:
       return j
     j += 1
   return -1
+
+def is_a_number(n):
+  try:
+    v = int(n)
+    return True
+  except ValueError:
+    return False

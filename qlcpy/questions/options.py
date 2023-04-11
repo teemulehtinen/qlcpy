@@ -48,6 +48,10 @@ def options(
 ) -> QLCOptionRequest:
   return QLCOptionRequest(opt(answers, type, info, correct))
 
+def random_order(answers: Iterable[Any]) -> Iterable[Any]:
+  mix_answers = list(answers)
+  return random.sample(mix_answers, len(mix_answers))
+
 def take_options(
   count: int,
   answers: Iterable[Any],
@@ -55,7 +59,7 @@ def take_options(
   info: Optional[str] = '',
   correct: Optional[bool] = False
 ) -> QLCOptionRequest:
-  return QLCOptionRequest(opt(answers, type, info, correct), count)
+  return QLCOptionRequest(opt(random_order(answers), type, info, correct), count)
 
 def fill_options(
   count: int,
@@ -64,8 +68,4 @@ def fill_options(
   info: Optional[str] = '',
   correct: Optional[bool] = False
 ) -> QLCOptionRequest:
-  return QLCOptionRequest(opt(answers, type, info, correct), count, True)
-
-def random_order(answers: Iterable[Any]) -> Iterable[Any]:
-  mix_answers = list(answers)
-  return random.sample(mix_answers, len(mix_answers))
+  return QLCOptionRequest(opt(random_order(answers), type, info, correct), count, True)

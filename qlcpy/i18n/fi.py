@@ -12,6 +12,12 @@ texts = {
   'o_loop_end_after': 'Toistorakenne loppuu ennen tätä riviä',
   'o_loop_end_inside': 'Tämä rivi on toistorakenteen sisällä, MUTTA se ei ole viimeinen rivi',
 
+  'q_except_source': lambda line: f'Miltä riviltä ohjelman suoritus voi siirtyä riville {line}?',
+  'o_except_source': 'Oikein, tämä rivi voi nostaa odotettua tyyppiä olevan virheen.',
+  'o_except_not_source': 'Tämä rivi EI voi nostaa odotettua tyyppiä olevaa virhettä.',
+  'o_except_try_line': 'Vähintään try-lohkon ensimmäistä riviä aletaan suorittaa.',
+  'o_except_outside_try': 'Except-lohkoon ei voida siirtyä vastaavan try-lohkon ulkopuolelta.',
+
   'q_variable_write_declaration':
     lambda id, line: (
       f'Muuttujaan <em>{id}</em> asetetaan arvo rivillä {line}. '
