@@ -38,6 +38,14 @@ texts = {
   'o_except_try_line': 'At least the first line inside try-block starts executing.',
   'o_except_outside_try': 'Except-block cannot be entered from outside the corresponding try-block.',
 
+  'q_line_purpose': lambda line: f'Which of the following best describes the purpose of line {line}?',
+  'o_line_purpose_read_input': 'Accepts new data',
+  'o_line_purpose_zero_div_guard': 'Guards against division by zero',
+  'o_line_purpose_end_condition': 'Is a condition for ending program',
+  'o_line_purpose_ignores_input': 'Ignores unwanted input',
+  'o_line_purpose_correct': 'Correct.',
+  'o_line_purpose_incorrect': 'Incorrect.',
+
   'q_loop_count':
     lambda line: (
       f'Line {line} has a loop structure. How many times does the loop execute '

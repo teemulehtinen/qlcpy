@@ -18,6 +18,14 @@ texts = {
   'o_except_try_line': 'Vähintään try-lohkon ensimmäistä riviä aletaan suorittaa.',
   'o_except_outside_try': 'Except-lohkoon ei voida siirtyä vastaavan try-lohkon ulkopuolelta.',
 
+  'q_line_purpose': lambda line: f'Mikä seuraavista kuvaa parhaiten rivin {line} tarkoitusta?',
+  'o_line_purpose_read_input': 'Vastaanottaa uutta dataa',
+  'o_line_purpose_zero_div_guard': 'Suojaa nollalla jakamiselta',
+  'o_line_purpose_end_condition': 'On ehto ohjelman loppumiselle',
+  'o_line_purpose_ignores_input': 'Ohittaa ei halutun syötteen',
+  'o_line_purpose_correct': 'Oikein.',
+  'o_line_purpose_incorrect': 'Väärin.',
+
   'q_variable_write_declaration':
     lambda id, line: (
       f'Muuttujaan <em>{id}</em> asetetaan arvo rivillä {line}. '

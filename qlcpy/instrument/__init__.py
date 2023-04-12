@@ -5,22 +5,17 @@ from unittest import mock
 
 from .ProgramData import ProgramData
 from .WalkNames import WalkNames
-from .WalkFind import WalkFind
-from .WalkErrorCauses import WalkErrorCauses, ExceptAndCauses
 from .Instrumentor import Instrumentor
 from .TransformForInstrumentor import TransformForInstrumentor
+from .WalkFind import WalkFind
+from .WalkErrorCauses import WalkErrorCauses, ExceptAndCauses
+from .WalkLinePurposes import WalkLinePurposes, LinePurpose
 
 INSTRUMENT_NAME = '___i'
 TEMPORARY_NAME = '___t'
 
 def collect_elements(tree: AST) -> ProgramData:
   return WalkNames().walk(tree)
-
-def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
-  return WalkFind().walk(tree, class_names)
-
-def collect_error_causes(node: Try) -> List[ExceptAndCauses]:
-  return WalkErrorCauses.get_try_except_causes(node)
 
 def transform(tree: AST, data: ProgramData, add: Optional[List[AST]]) -> AST:
   return TransformForInstrumentor(INSTRUMENT_NAME, TEMPORARY_NAME).transform(tree, data, add)
@@ -57,3 +52,12 @@ def parse_body(call: Optional[str]):
     mod = parse(call)
     return mod.body
   return None
+
+def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
+  return WalkFind().walk(tree, class_names)
+
+def collect_error_causes(node: Try) -> List[ExceptAndCauses]:
+  return WalkErrorCauses.get_try_except_causes(node)
+
+def search_line_purposes(tree: AST) -> List[LinePurpose]:
+  return WalkLinePurposes().walk(tree)

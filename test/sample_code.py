@@ -1,21 +1,21 @@
 from typing import List
 
-def find_first(words_list: List[str], initial: str) -> None:
+def find_first(words_list: List[str], initial: str) -> int:
   for i in range(len(words_list)):
     if words_list[i].startswith(initial):
-      print(i)
+      return i
 
-def find_first_w(words_list: List[str], initial: str) -> int:
-  j = 0
-  while j < len(words_list):
-    if words_list[j].startswith(initial):
-      return j
-    j += 1
-  return -1
-
-def is_a_number(n):
-  try:
-    v = int(n)
-    return True
-  except ValueError:
-    return False
+def count_average() -> None:
+  s = 0
+  n = 0
+  word = None
+  while word is None or word != '':
+    word = input('Enter number or empty line to count average')
+    try:
+      s += int(word)
+      n += 1
+    except ValueError:
+      print('Not a number')
+  if n > 0:
+    print('Average', s / n)
+  print('No numbers')
