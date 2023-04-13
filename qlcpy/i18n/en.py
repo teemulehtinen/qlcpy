@@ -4,6 +4,10 @@ texts = {
   'o_reserved_word': 'A reserved word in programming language',
   'o_built_in_function': 'A function that is built in to programming language',
   'o_unused_word': 'This word was not used in the program',
+  'q_parameter_names':
+    lambda line: f'Which of the following are parameter names of the function declared on line {line}?',
+  'o_parameter_name': 'A parameter of the function',
+  'o_function_name': 'A name of the function',
 
   'q_loop_end':
     lambda line: f'A program loop starts on line {line}. Which is the last line inside it?',

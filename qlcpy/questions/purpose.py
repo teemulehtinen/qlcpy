@@ -37,3 +37,5 @@ def line_purpose(
   return list(
     LinePurpose(pos, type, p.line, p.purpose) for p in search_line_purposes(tree)
   )
+
+# TODO variable_role

@@ -23,36 +23,42 @@ TEMPLATES: List[QLCTemplate] = [
   ),
   QLCTemplate(
     1,
+    'ParameterNames',
+    'The parameter names',
+    names.parameter_names,
+  ),
+  QLCTemplate(
+    2,
     'LoopEnd',
     'The last line of a loop',
     lines.loop_end
   ),
   QLCTemplate(
-    2,
+    3,
     'VariableDeclaration',
     'The declaration line for a variable',
     lines.variable_declaration
   ),
   QLCTemplate(
-    3,
+    4,
     'ExceptSource',
     'A potential line to raise an error for an except-block',
     lines.except_source
   ),
   QLCTemplate(
-    4,
+    5,
     'LinePurpose',
     'A purpose of a line',
     purpose.line_purpose,
   ),
   QLCTemplate(
-    5,
+    6,
     'LoopCount',
     'The number of times that a loop was evaluated',
     dynamic.loop_count
   ),
   QLCTemplate(
-    6,
+    7,
     'VariableTrace',
     'The values that were assigned to a variable',
     dynamic.variable_trace

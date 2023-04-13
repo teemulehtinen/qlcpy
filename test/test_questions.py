@@ -50,6 +50,11 @@ class TestQuestions(unittest.TestCase):
     for t in ['variable', 'reserved_word', 'builtin_function', 'unused_word']:
       self.assertTrue(any(o.type == t and o.correct == (t == 'variable') for o in qlc.options))
 
+  def test_parameter_names(self):
+    qlc = self._gen_a_qlc('ParameterNames')
+    for t in ['parameter', 'function', 'variable', 'reserved_word']:
+      self.assertTrue(any(o.type == t and o.correct == (t == 'parameter') for o in qlc.options))
+
   def test_loop_end(self):
     self._test_qlcs('LoopEnd', { '4': 6, '12': 18 }, self.RE_LINE)
 

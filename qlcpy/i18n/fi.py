@@ -4,6 +4,10 @@ texts = {
   'o_reserved_word': 'Varattu sana ohjelmointikielessä',
   'o_built_in_function': 'Funktio, joka on määritelty ohjelmointikielen sisään',
   'o_unused_word': 'Käyttämätön sana tässä ohjelmassa',
+  'q_parameter_names':
+    lambda line: f'Mitkä seuraavista ovat rivillä {line} määritellyn funktion parametrien nimiä?',
+  'o_parameter_name': 'Funktion parametri',
+  'o_function_name': 'Funktion nimi',
 
   'q_loop_end':
     lambda line: f'Toistorakenne alkaa riviltä {line}. Mikä on viimeinen rivi sen sisällä?',

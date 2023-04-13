@@ -77,6 +77,11 @@ class ProgramData:
 			if el.container_scope == scope:
 				return el
 		return None
+	
+	def elements_in_scope(self, scope: int, types: List[str] = None) -> Iterator[Element]:
+		for el in self.elements:
+			if el.scope == scope and (types is None or el.type in types):
+				yield el
 
 	def __repr__(self) -> str:
 		return '\n'.join(str(el) for el in self.elements)
