@@ -10,6 +10,7 @@ from .TransformForInstrumentor import TransformForInstrumentor
 from .WalkFind import WalkFind
 from .WalkErrorCauses import WalkErrorCauses, ExceptAndCauses
 from .WalkLinePurposes import WalkLinePurposes, LinePurpose
+from .VariableRole import VariableRole
 
 INSTRUMENT_NAME = '___i'
 TEMPORARY_NAME = '___t'
@@ -61,3 +62,6 @@ def collect_error_causes(node: Try) -> List[ExceptAndCauses]:
 
 def search_line_purposes(tree: AST) -> List[LinePurpose]:
   return WalkLinePurposes().walk(tree)
+
+def analyse_variable_role(var: ProgramData.Element) -> VariableRole:
+  return VariableRole(var)

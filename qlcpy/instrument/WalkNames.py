@@ -1,6 +1,6 @@
 from ast import (
 	AST, If, For, While, Pass, Try, ExceptHandler, Raise, FunctionDef, Delete,
-	Return, Break, Continue, With, Store, Load
+	Return, Break, Continue, Store, Load
 )
 from typing import Dict, List, Optional
 
@@ -42,9 +42,15 @@ class WalkNames(WalkAST):
 	def current_scope(self) -> int:
 		return self.scopes[-1].id
 
-	def record_name(self, type: str, id: str, declaration: Optional[AST]) -> ProgramData.Element:
+	def record_name(
+		self,
+		type: str,
+		id: str,
+		declaration: Optional[AST] = None,
+		stack: Optional[NodeStack] = None
+	) -> ProgramData.Element:
 		s = self.current_scope() if declaration else 0
-		el = self.data.declare(type, s, id, declaration)
+		el = self.data.declare(type, s, id, declaration, stack)
 		if not declaration:
 			for s in self.scopes:
 				if not id in s:
@@ -58,22 +64,21 @@ class WalkNames(WalkAST):
 		if type(node.ctx) == Store:
 			el = self.scopes[-1].get(node.id, None)
 			if el is None:
-				self.record_name('variable', node.id, node)
+				self.record_name('variable', node.id, node, stack)
 			else:
-				el.reference(node)
+				el.reference(node, stack)
 		elif type(node.ctx) == Load:
 			el = self.scopes[-1].get(node.id, None)
 			if el is None:
 				el = self.record_name(
 					'builtin' if node.id in self.COMMON_BUILTIN_IDS else 'unknown',
-					node.id,
-					None
+					node.id
 				)
-			el.reference(node)
+			el.reference(node, stack)
 
 	def enter_FunctionDef(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		el = self.record_name('function', node.name, node)
+		el = self.record_name('function', node.name, node, stack)
 		self.push_scope()
 		el.set_container_scope(self.current_scope())
 
@@ -89,31 +94,31 @@ class WalkNames(WalkAST):
 
 	def enter_arg(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		self.record_name('argument', node.arg, node)
+		self.record_name('argument', node.arg, node, stack)
 
 	def enter_If(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		self.data.declare('conditional', self.current_scope(), 'if', node)
+		self.data.declare('conditional', self.current_scope(), 'if', node, stack)
 	
 	def enter_For(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		self.data.declare('loop', self.current_scope(), 'for', node)
+		self.data.declare('loop', self.current_scope(), 'for', node, stack)
 
 	def enter_While(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		self.data.declare('loop', self.current_scope(), 'while', node)
+		self.data.declare('loop', self.current_scope(), 'while', node, stack)
 
 	def enter_Try(self, stack: NodeStack, node: AST) -> None:
 		self.generic_enter(stack, node)
-		self.data.declare('try', self.current_scope(), 'try', node)
+		self.data.declare('try', self.current_scope(), 'try', node, stack)
 
 	def generic_enter(self, stack: NodeStack, node: AST) -> None:
 		word = self.CLASS_TO_RESERVED_WORD.get(type(node))
 		if not word is None:
 			el = self.scopes[-1].get(word, None)
 			if el is None:
-				el = self.record_name('keyword', word, None)
-			el.reference(node)
+				el = self.record_name('keyword', word)
+			el.reference(node, stack)
 
 	def walk(self, tree: AST) -> ProgramData:
 		self.data = ProgramData()

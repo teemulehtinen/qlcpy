@@ -1,27 +1,49 @@
-from ast import AST
+from ast import AST, Store
 from typing import Iterator, List, Optional
+
+from .WalkAST import NodeStack
 from ..primitives import Primitive
+
+class Reference:
+	def __init__(self, node: AST, stack: NodeStack):
+		self.node = node
+		self.stack = stack.copy()
+		self.is_store: bool = hasattr(node, 'ctx') and type(node.ctx) == Store
+	
+	def __eq__(self, other):
+		if isinstance(other, AST):
+			return self.node == other
+		return super().__eq__(other)
 
 class ProgramData:
 
 	class Element:
 
-		def __init__(self, type: str, scope: int, id: str, declaration: Optional[AST]) -> None:
+		def __init__(
+			self,
+			type: str,
+			scope: int,
+			id: str,
+			declaration: Optional[AST],
+			stack: Optional[NodeStack],
+		) -> None:
 			self.type = type
 			self.scope = scope
 			self.id = id
-			self.declaration = declaration
-			self.container_scope = None
-			self.references: List[AST] = []
+			self.declaration: Optional[Reference] = None
+			self.container_scope: Optional[int] = None
+			self.references: List[Reference] = []
 			self.values: List[Primitive] = []
 			self.evaluations: List[int] = []
+			if declaration:
+				self.declaration = Reference(declaration, stack or [])
 
 		def set_container_scope(self, scope: int) -> None:
 			self.container_scope = scope
 
-		def reference(self, node: AST) -> None:
-			self.references.append(node)
-		
+		def reference(self, node: AST, stack: NodeStack) -> None:
+			self.references.append(Reference(node, stack))
+
 		def value(self, value: Primitive) -> None:
 			self.values.append(value)
 
@@ -35,9 +57,9 @@ class ProgramData:
 			cscope = f' -> S{self.container_scope}' if self.container_scope else ''
 			info = [f'{self.type}: (S{self.scope}{cscope}) {self.id}']
 			if not self.declaration is None:
-				info.append(f'  declared on {self.declaration.lineno}')
+				info.append(f'  declared on {self.declaration.node.lineno}')
 			if len(self.references) > 0:
-				info.append(f'  referenced on {", ".join(str(r.lineno) for r in self.references)}')
+				info.append(f'  referenced on {", ".join(str(r.node.lineno) for r in self.references)}')
 			if len(self.values) > 0:
 				info.append(f'  assigned values {", ".join(str(v) for v in self.values)}')
 			if len(self.evaluations) > 0:
@@ -47,8 +69,15 @@ class ProgramData:
 	def __init__(self):
 		self.elements: List[self.Element] = []
 
-	def declare(self, type: str, scope: int, id: str, declaration: Optional[AST] = None) -> Element:
-		el = self.Element(type, scope, id, declaration)
+	def declare(
+		self,
+		type: str,
+		scope: int,
+		id: str,
+		declaration: Optional[AST] = None,
+		stack: Optional[NodeStack] = None
+	) -> Element:
+		el = self.Element(type, scope, id, declaration, stack)
 		self.elements.append(el)
 		return el
 

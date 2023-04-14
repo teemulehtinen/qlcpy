@@ -56,7 +56,7 @@ class ParameterNames(QLCPrepared):
     return QLC(
       self.pos,
       self.type,
-      t('q_parameter_names', self.function.declaration.lineno),
+      t('q_parameter_names', self.function.declaration.node.lineno),
       pick_options(
         take_options(2, [e.id for e in args], 'parameter', t('o_parameter_name'), True),
         options([self.function.id], 'function', t('o_function_name')),

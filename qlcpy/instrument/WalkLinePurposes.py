@@ -8,9 +8,17 @@ from .WalkAST import WalkAST
 from .trees import NodeStack
 
 class LinePurpose():
+  READ_INPUT = 'read_input'
+  ZERO_DIV_GUARD = 'zero_div_guard'
+  END_CONDITION = 'end_condition'
+  SUPPORTED_PURPOSES = [READ_INPUT, ZERO_DIV_GUARD, END_CONDITION]
+
   def __init__(self, line: int, purpose: str):
     self.line = line
     self.purpose = purpose
+  
+  def other_purposes(self):
+    return list(k for k in self.SUPPORTED_PURPOSES if k != self.purpose)
 
 class LoopContents():
   def __init__(self):
@@ -27,13 +35,13 @@ class WalkLinePurposes(WalkAST):
       type(node.func) == Name and type(node.func.ctx) == Load and node.func.id == 'input'
       and any(type(parent) == Assign and field == 'value' for parent, field in stack)
     ):
-      self.purposes.append(LinePurpose(node.lineno, 'read_input'))
+      self.purposes.append(LinePurpose(node.lineno, LinePurpose.READ_INPUT))
 
   def enter_BinOp(self, stack: NodeStack, node: BinOp):
     if type(node.op) == Div and type(node.right) == Name and type(node.right.ctx) == Load:
       for parent, field in stack:
         if type(parent) == If and self.check_zero_guard(parent, field, node.right.id):
-          self.purposes.append(LinePurpose(parent.lineno, 'zero_div_guard'))
+          self.purposes.append(LinePurpose(parent.lineno, LinePurpose.ZERO_DIV_GUARD))
 
   def check_zero_guard(self, node: If, field: str, variable: str) -> bool:
     if type(node.test) == Compare and len(node.test.comparators) == 1:
@@ -72,7 +80,7 @@ class WalkLinePurposes(WalkAST):
   def leave_While(self, stack: NodeStack, node: While):
     contents = self.loop_stack.pop()
     if type(node.test) != Constant and len(contents.break_lines) == 0 and len(self.loop_stack) == 0:
-      self.purposes.append(LinePurpose(node.lineno, 'end_condition'))
+      self.purposes.append(LinePurpose(node.lineno, LinePurpose.END_CONDITION))
 
   def walk(self, tree: AST) -> List[LinePurpose]:
     self.purposes = []

@@ -1,6 +1,7 @@
 from typing import List
 
 def find_first(words_list: List[str], initial: str) -> int:
+  f = False
   for i in range(len(words_list)):
     if words_list[i].startswith(initial):
       return i

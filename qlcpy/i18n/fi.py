@@ -16,20 +16,6 @@ texts = {
   'o_loop_end_after': 'Toistorakenne loppuu ennen tätä riviä',
   'o_loop_end_inside': 'Tämä rivi on toistorakenteen sisällä, MUTTA se ei ole viimeinen rivi',
 
-  'q_except_source': lambda line: f'Miltä riviltä ohjelman suoritus voi siirtyä riville {line}?',
-  'o_except_source': 'Oikein, tämä rivi voi nostaa odotettua tyyppiä olevan virheen.',
-  'o_except_not_source': 'Tämä rivi EI voi nostaa odotettua tyyppiä olevaa virhettä.',
-  'o_except_try_line': 'Vähintään try-lohkon ensimmäistä riviä aletaan suorittaa.',
-  'o_except_outside_try': 'Except-lohkoon ei voida siirtyä vastaavan try-lohkon ulkopuolelta.',
-
-  'q_line_purpose': lambda line: f'Mikä seuraavista kuvaa parhaiten rivin {line} tarkoitusta?',
-  'o_line_purpose_read_input': 'Vastaanottaa uutta dataa',
-  'o_line_purpose_zero_div_guard': 'Suojaa nollalla jakamiselta',
-  'o_line_purpose_end_condition': 'On ehto ohjelman loppumiselle',
-  'o_line_purpose_ignores_input': 'Ohittaa ei halutun syötteen',
-  'o_line_purpose_correct': 'Oikein.',
-  'o_line_purpose_incorrect': 'Väärin.',
-
   'q_variable_write_declaration':
     lambda id, line: (
       f'Muuttujaan <em>{id}</em> asetetaan arvo rivillä {line}. '
@@ -49,6 +35,31 @@ texts = {
   'o_variable_declaration_reference':
     'Tämä rivi viittaa (lukee tai sijoittaa) annettuun muuttujaan, MUTTA se luodaan aiemmin',
   'o_variable_declaration_random': 'Tämä on satunnainen rivi, joka ei käsittele annettua muuttujaa',
+
+  'q_except_source': lambda line: f'Miltä riviltä ohjelman suoritus voi siirtyä riville {line}?',
+  'o_except_source': 'Oikein, tämä rivi voi nostaa odotettua tyyppiä olevan virheen.',
+  'o_except_not_source': 'Tämä rivi EI voi nostaa odotettua tyyppiä olevaa virhettä.',
+  'o_except_try_line': 'Vähintään try-lohkon ensimmäistä riviä aletaan suorittaa.',
+  'o_except_outside_try': 'Except-lohkoon ei voida siirtyä vastaavan try-lohkon ulkopuolelta.',
+
+  'q_line_purpose': lambda line: f'Mikä seuraavista kuvaa parhaiten rivin {line} tarkoitusta?',
+  'o_line_purpose_read_input': 'Vastaanottaa uutta dataa',
+  'o_line_purpose_zero_div_guard': 'Suojaa nollalla jakamiselta',
+  'o_line_purpose_end_condition': 'On ehto ohjelman loppumiselle',
+  'o_line_purpose_ignores_input': 'Ohittaa ei halutun syötteen',
+
+  'q_variable_role':
+    lambda id, line: (
+      f'Mikä seuraavista kuvaa parhaiten rivillä {line} luodun muuttujan <em>{id}</em> roolia?'
+    ),
+  'o_variable_dead': 'Muuttujaa ei koskaan lueta ja se voitaisiin poistaa',
+  'o_variable_fixed': '<em>Kiintoarvo</em>, jota ei muuteta luomisen jälkeen',
+  'o_variable_stepper': '<em>Askeltaja</em>, joka käy systemaattisesti läpi tasavälisiä arvoja',
+  'o_variable_gatherer': '<em>Kokooja</em>, joka yhdistää itseensä uusia arvoja',
+  'o_variable_holder': '<em>Säilyttäjä</em>, joka korvaa arvonsa seuraavaksi kelpaavalla arvolla',
+
+  'o_correct': 'Oikein.',
+  'o_incorrect': 'Väärin.',
 
   'q_loop_count':
     lambda line: (

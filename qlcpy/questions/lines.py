@@ -59,18 +59,18 @@ class VariableDeclaration(QLCPrepared):
     return QLC(
       self.pos,
       self.type,
-      t(text_id[ref.ctx.__class__.__name__], ref.id, ref.lineno),
+      t(text_id[ref.node.ctx.__class__.__name__], ref.node.id, ref.node.lineno),
       pick_options(
-        options([decl.lineno], 'declaration_line', t('o_variable_declaration_correct'), True),
+        options([decl.node.lineno], 'declaration_line', t('o_variable_declaration_correct'), True),
         take_options(
           2,
-          [r.lineno for r in refs],
+          [r.node.lineno for r in refs],
           'reference_line',
           t('o_variable_declaration_reference')
         ),
         fill_options(
           4,
-          range(max(1, decl.lineno - 2), max(r.lineno for r in refs) + 3),
+          range(max(1, decl.node.lineno - 2), max(r.node.lineno for r in refs) + 3),
           'random_line',
           t('o_variable_declaration_random')
         )

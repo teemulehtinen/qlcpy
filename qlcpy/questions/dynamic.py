@@ -30,9 +30,9 @@ class LoopCount(QLCPrepared):
       self.pos,
       self.type,
       (
-        t('q_loop_count_call', self.loop.declaration.lineno, self.call)
+        t('q_loop_count_call', self.loop.declaration.node.lineno, self.call)
         if self.call else
-        t('q_loop_count', self.loop.declaration.lineno)
+        t('q_loop_count', self.loop.declaration.node.lineno)
       ),
       pick_options(
         options([count], 'correct_count', t('o_loop_count_correct'), True),
@@ -90,9 +90,9 @@ class VariableTrace(QLCPrepared):
         self.pos,
         self.type,
         (
-          t('q_variable_trace_start_call', decl.id, decl.lineno, self.call)
+          t('q_variable_trace_start_call', decl.node.id, decl.node.lineno, self.call)
           if self.call else
-          t('q_variable_trace_start', decl.id, decl.lineno)
+          t('q_variable_trace_start', decl.node.id, decl.node.lineno)
         ),
         pick_options(
           options(
@@ -116,9 +116,9 @@ class VariableTrace(QLCPrepared):
       self.pos,
       self.type,
       (
-        t('q_variable_trace_call', decl.id, decl.lineno, self.call)
+        t('q_variable_trace_call', decl.node.id, decl.node.lineno, self.call)
         if self.call else
-        t('q_variable_trace', decl.id, decl.lineno)
+        t('q_variable_trace', decl.node.id, decl.node.lineno)
       ),
       pick_options(
         options([primitives_to_str(vals)], 'correct_trace', t('o_variable_trace_correct'), True),

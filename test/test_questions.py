@@ -48,28 +48,32 @@ class TestQuestions(unittest.TestCase):
   def test_variable_names(self):
     qlc = self._gen_a_qlc('VariableNames')
     for t in ['variable', 'reserved_word', 'builtin_function', 'unused_word']:
-      self.assertTrue(any(o.type == t and o.correct == (t == 'variable') for o in qlc.options))
+      self.assertTrue(all(o.correct == (t == 'variable') for o in qlc.options if o.type == t))
 
   def test_parameter_names(self):
     qlc = self._gen_a_qlc('ParameterNames')
     for t in ['parameter', 'function', 'variable', 'reserved_word']:
-      self.assertTrue(any(o.type == t and o.correct == (t == 'parameter') for o in qlc.options))
+      self.assertTrue(all(o.correct == (t == 'parameter') for o in qlc.options if o.type == t))
 
   def test_loop_end(self):
-    self._test_qlcs('LoopEnd', { '4': 6, '12': 18 }, self.RE_LINE)
+    self._test_qlcs('LoopEnd', { '5': 7, '13': 19 }, self.RE_LINE)
 
   def test_variable_declaration(self):
-    self._test_qlcs('VariableDeclaration', { 'i': 4, 's': 9, 'n': 10, 'word': 11 }, self.RE_EM)
+    self._test_qlcs('VariableDeclaration', { 'i': 5, 's': 10, 'n': 11, 'word': 12 }, self.RE_EM)
 
   def test_except_source(self):
-    self._test_qlcs('ExceptSource', { '17': 15 }, self.RE_LINE)
+    self._test_qlcs('ExceptSource', { '18': 16 }, self.RE_LINE)
 
   def test_line_purpose(self):
-    correct_types = { '12': 'end_condition', '13': 'read_input', '19': 'zero_div_guard' }
-    self._test_qlcs('LinePurpose', correct_types, self.RE_LINE, answer_types=True)
+    cor = { '13': 'end_condition', '14': 'read_input', '20': 'zero_div_guard' }
+    self._test_qlcs('LinePurpose', cor, self.RE_LINE, answer_types=True)
+
+  def test_variable_role(self):
+    cor = { 'f': 'dead', 'i': 'stepper', 's': 'gatherer', 'n': 'stepper', 'word': 'holder' }
+    self._test_qlcs('VariableRole', cor, self.RE_EM, answer_types=True)
 
   def test_loop_count(self):
-    self._test_qlcs('LoopCount', { '4': 4, '12': 0 }, self.RE_LINE)
+    self._test_qlcs('LoopCount', { '5': 4, '13': 0 }, self.RE_LINE)
 
   def test_variable_trace(self):
     self._test_qlcs('VariableTrace', { 'i': '0, 1, 2, 3'}, self.RE_EM)

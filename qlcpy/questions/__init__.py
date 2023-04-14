@@ -42,23 +42,29 @@ TEMPLATES: List[QLCTemplate] = [
   QLCTemplate(
     4,
     'ExceptSource',
-    'A potential line to raise an error for an except-block',
+    'The potential line to raise an error for an except-block',
     lines.except_source
   ),
   QLCTemplate(
     5,
     'LinePurpose',
-    'A purpose of a line',
+    'The description for the purpose of a line',
     purpose.line_purpose,
   ),
   QLCTemplate(
     6,
+    'VariableRole',
+    'The description for the role of a variable',
+    purpose.variable_role,
+  ),
+  QLCTemplate(
+    7,
     'LoopCount',
     'The number of times that a loop was evaluated',
     dynamic.loop_count
   ),
   QLCTemplate(
-    7,
+    8,
     'VariableTrace',
     'The values that were assigned to a variable',
     dynamic.variable_trace

@@ -47,8 +47,20 @@ texts = {
   'o_line_purpose_zero_div_guard': 'Guards against division by zero',
   'o_line_purpose_end_condition': 'Is a condition for ending program',
   'o_line_purpose_ignores_input': 'Ignores unwanted input',
-  'o_line_purpose_correct': 'Correct.',
-  'o_line_purpose_incorrect': 'Incorrect.',
+  
+  'q_variable_role':
+    lambda id, line: (
+      f'Which of the following best describes the role of variable <em>{id}</em>'
+      f'that is created on line {line}?'
+    ),
+  'o_variable_dead': 'The variable is never accessed and could be removed',
+  'o_variable_fixed': 'A <em>fixed value</em> that is not changed after created',
+  'o_variable_stepper': 'A <em>stepper</em> that systematically goes through evenly spaced values',
+  'o_variable_gatherer': 'A <em>gatherer</em> that combines new values to itself',
+  'o_variable_holder': 'A <em>holder</em> that replaces it\'s value with the next acceptable value',
+
+  'o_correct': 'Correct.',
+  'o_incorrect': 'Incorrect.',
 
   'q_loop_count':
     lambda line: (
