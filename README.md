@@ -20,7 +20,7 @@ The concept of Questions About Learners' Code (QLCs) is first introduced by Leht
 ### Example result
 
 For the file [test/sample_code.py](test/sample_code.py):
-
+```python
     from typing import List
 
     def find_first(words_list: List[str], initial: str) -> int:
@@ -43,9 +43,10 @@ For the file [test/sample_code.py](test/sample_code.py):
       if n > 0:
         print('Average', s / n)
       print('No numbers')
+```
 
 We use the CLI to create one question of each available type:
-
+```
      % qlcpy test/sample_code.py --call 'find_first(["lorem", "ipsum", "dolor", "sit", "amet"], "s")' -n 9 --unique
     Which of the following are variable names in the program? [VariableNames]
       if: A reserved word in programming language [reserved_word]
@@ -102,6 +103,7 @@ We use the CLI to create one question of each available type:
     * 0, 1, 2, 3: Correct, these values were assigned in this order to the variable. [correct_trace]
       3, 1, 0, 2: This is an incorrect, random sequence of values. [random_values]
       3, 1, 2: This is an incorrect, random sequence of values. [random_values]
+```
 
 ---
 
@@ -113,7 +115,7 @@ We use the CLI to create one question of each available type:
 
 The package offers a CLI for test prints as well as JSON output. See the example section
 above for example output. Below is the usage instruction from the command.
-
+```
      % qlcpy --help
     usage: __main__.py [-h] [-m] [-c CALL] [-sc SILENT_CALL] [-i INPUT] [-n N]
                        [-t TYPES [TYPES ...]] [-u] [-l LANG] [--json]
@@ -141,12 +143,13 @@ above for example output. Below is the usage instruction from the command.
       -l LANG, --lang LANG  Language code for the text (en, fi)
       --json                Print question data as JSON
       --list-types          List available question types
+```
 
 For programmatic integration the library offers a [generate](qlcpy/generator.py#L22)
 function that offers the same generation options as the CLI command. Type hints are
 included and [models.py](qlcpy/models.py) describes the input and output data. Below
 is an example python program using the library.
-
+```python
     import qlcpy
     
     with open('test/sample_code.py', 'r') as f:
@@ -166,3 +169,4 @@ is an example python program using the library.
     
     import json
     print(json.dumps(list(qlc.to_dict() for qlc in qlcs)))
+```
