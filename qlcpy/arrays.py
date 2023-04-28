@@ -14,6 +14,8 @@ def altered_arrays(
     random.sample(a, len(a)),
     random.sample(random.choice(distractors), len(a)),
     random.sample(random.choice(distractors), len(a)),
+    [random.randint(0, 10) for _ in a],
+    [random.randint(0, 10) for _ in a],
   ]
   if fix_len:
     return altered

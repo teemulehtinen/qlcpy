@@ -23,7 +23,7 @@ class LoopCount(QLCPrepared):
     self.scope = scope
 
   def make(self):
-    if len(self.scope.evaluations) > 1:
+    if len(self.scope.evaluations) > 0:
       return None
     count = sum(1 for b in self.loop.evaluations if b == 0)
     return QLC(
@@ -80,7 +80,7 @@ class VariableTrace(QLCPrepared):
     other = [o.values for o in self.all if o != self.variable]
     if (
       decl is None
-      or len(vals) < 2
+      or len(vals) < 1
       or includes_references(vals)
       or len(self.scope.evaluations) > 1
     ):
