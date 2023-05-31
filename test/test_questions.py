@@ -39,6 +39,7 @@ class TestQuestions(unittest.TestCase):
           self.assertEqual(o.type if answer_types else o.answer, answer)
         else:
           self.assertNotEqual(o.type if answer_types else o.answer, answer)
+    return qlcs
 
   def setUp(self) -> None:
     with open('test/sample_code.py', 'r') as f:
@@ -56,7 +57,7 @@ class TestQuestions(unittest.TestCase):
       self.assertTrue(all(o.correct == (t == 'parameter') for o in qlc.options if o.type == t))
 
   def test_loop_end(self):
-    self._test_qlcs('LoopEnd', { '5': 7, '13': 19 }, self.RE_LINE)
+    qlcs = self._test_qlcs('LoopEnd', { '5': 7, '13': 19, '25': 26 }, self.RE_LINE)
 
   def test_variable_declaration(self):
     self._test_qlcs('VariableDeclaration', { 'i': 5, 's': 10, 'n': 11, 'word': 12 }, self.RE_EM)
@@ -65,7 +66,7 @@ class TestQuestions(unittest.TestCase):
     self._test_qlcs('ExceptSource', { '18': 16 }, self.RE_LINE)
 
   def test_line_purpose(self):
-    cor = { '13': 'end_condition', '14': 'read_input', '20': 'zero_div_guard' }
+    cor = { '13': 'end_condition', '14': 'read_input', '21': 'zero_div_guard' }
     self._test_qlcs('LinePurpose', cor, self.RE_LINE, answer_types=True)
 
   def test_variable_role(self):
@@ -73,7 +74,7 @@ class TestQuestions(unittest.TestCase):
     self._test_qlcs('VariableRole', cor, self.RE_EM, answer_types=True)
 
   def test_loop_count(self):
-    self._test_qlcs('LoopCount', { '5': 4, '13': 0 }, self.RE_LINE)
+    self._test_qlcs('LoopCount', { '5': 4, '25': 0 }, self.RE_LINE)
 
   def test_variable_trace(self):
-    self._test_qlcs('VariableTrace', { 'i': '0, 1, 2, 3'}, self.RE_EM)
+    self._test_qlcs('VariableTrace', { 'f': 'False', 'i': '0, 1, 2, 3' }, self.RE_EM)

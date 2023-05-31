@@ -3,18 +3,22 @@ from ast import AST, Set, Try
 from typing import List, Optional
 
 from ..i18n import t
-from ..instrument import find_nodes, collect_error_causes, ExceptAndCauses, Instrumentor, ProgramData
+from ..instrument import (
+  find_nodes, find_next, collect_error_causes, ExceptAndCauses, Instrumentor, ProgramData
+)
 from ..models import QLC, QLCPrepared
 from .options import pick_options, options, take_options, fill_options
 
 class LoopEnd(QLCPrepared):
-  def __init__(self, pos: int, type: str, node: AST):
+  def __init__(self, pos: int, type: str, node: AST, next: Optional[AST]):
     super().__init__(pos, type)
     self.node = node
+    self.next = next
 
   def make(self):
     beg = self.node.lineno
     end = self.node.end_lineno
+    nex = self.next.lineno if self.next else self.node.end_lineno + 2
     return QLC(
       self.pos,
       self.type,
@@ -22,9 +26,9 @@ class LoopEnd(QLCPrepared):
       pick_options(
         options([end], 'last_line_inside_block', t('o_loop_end_correct'), True),
         options([max(1, beg - 1)], 'line_before_block', t('o_loop_end_before')),
-        options([end + 1], 'line_after_block', t('o_loop_end_after')),
+        options([nex], 'line_after_block', t('o_loop_end_after')),
         fill_options(4, range(beg + 1, end), 'line_inside_block', t('o_loop_end_inside')),
-        fill_options(4, [end + 2], 'line_after_block', t('o_loop_end_after'))
+        fill_options(4, [nex + 1], 'line_after_block', t('o_loop_end_after'))
       )
     )
 
@@ -35,8 +39,10 @@ def loop_end(
   call: Optional[str],
   ins: Instrumentor
 ) -> List[LoopEnd]:
+
   return list(
-    LoopEnd(pos, type, node) for node in find_nodes(tree, ['For', 'While'])
+    LoopEnd(pos, type, node, find_next(tree, node))
+    for node in find_nodes(tree, ['For', 'While'])
   )
 
 class VariableDeclaration(QLCPrepared):

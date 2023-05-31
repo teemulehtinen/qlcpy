@@ -93,11 +93,15 @@ class VariableRole():
     stores = list(r for r in var.references if r.is_store)
     if len(stores) == 0:
       parent = stack_top(var.declaration.stack)
-      if is_for(parent) and is_for_range(parent):
-        return cls.STEPPER
-      # TODO consider temporaries separately
-      return cls.FIXED
-        
+      if is_for(parent):
+        if is_for_range(parent):
+          return cls.STEPPER
+        return cls.NONE
+      a = AssignmentInfo(parent, var.id)
+      if a.is_assignment and type(a.expr) == Constant:
+        return cls.FIXED
+      return cls.NONE
+
     # Includes iterators
     parents = list(stack_top(r.stack) for r in stores)
     fors = list(is_for(p) for p in parents)

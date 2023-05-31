@@ -5,6 +5,7 @@ from unittest import mock
 
 from .ProgramData import ProgramData
 from .WalkNames import WalkNames
+from .WalkNext import WalkNext
 from .Instrumentor import Instrumentor
 from .TransformForInstrumentor import TransformForInstrumentor
 from .WalkFind import WalkFind
@@ -56,6 +57,9 @@ def parse_body(call: Optional[str]):
 
 def find_nodes(tree: AST, class_names: List[str]) -> List[AST]:
   return WalkFind().walk(tree, class_names)
+
+def find_next(tree: AST, search: AST) -> Optional[AST]:
+  return WalkNext().walk(tree, search)
 
 def collect_error_causes(node: Try) -> List[ExceptAndCauses]:
   return WalkErrorCauses.get_try_except_causes(node)

@@ -18,9 +18,9 @@ class TestTransform(unittest.TestCase):
       [(0, 'find_first'), (0, 'count_average')]
     )
     self.assertEqual(
-      list((e.scope, e.id) for e in data.elements_for_types(['argument', 'variable']))[:6],
+      list((e.scope, e.id) for e in data.elements_for_types(['argument', 'variable'])),
       [
-        (1, 'words_list'), (1, 'initial'), (1, 'i'),
+        (1, 'words_list'), (1, 'initial'), (1, 'f'), (1, 'i'),
         (2, 's'), (2, 'n'), (2, 'word')
       ]
     )
@@ -35,12 +35,12 @@ class TestTransform(unittest.TestCase):
     instrumentor = run_with_instrumentor(self.tree, parse_body(call))
     self.assertEqual(len(instrumentor.errors), 0)
     vars = list(instrumentor.data.elements_for_types(['variable']))
-    self.assertEqual(vars[0].values, [0, 1])
+    self.assertEqual(vars[1].values, [0, 1])
   
   def test_input(self) -> None:
     call = "count_average()"
     instrumentor = run_with_instrumentor(self.tree, parse_body(call), '4\n8\n\n')
     self.assertEqual(len(instrumentor.errors), 0)
     vars = list(instrumentor.data.elements_for_types(['variable']))
-    self.assertEqual(vars[1].values, [0, 4, 12])
-    self.assertEqual(vars[3].values, [None, '4', '8', ''])
+    self.assertEqual(vars[2].values, [0, 4, 12])
+    self.assertEqual(vars[4].values, [None, '4', '8', ''])

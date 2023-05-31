@@ -20,15 +20,18 @@ class LinePurpose():
   def other_purposes(self):
     return list(k for k in self.SUPPORTED_PURPOSES if k != self.purpose)
 
-class LoopContents():
+class ProcedureScope():
   def __init__(self):
-    self.break_lines: List[int] = []
+    self.loop_depth: int = 0
+    self.breaked: bool = False
+    self.top_cond: List[LinePurpose] = []
+    self.top_loops_count: int = 0
 
 class WalkLinePurposes(WalkAST):
 
   def __init__(self) -> None:
     self.purposes: List[LinePurpose] = []
-    self.loop_stack: List[LoopContents] = []
+    self.procedures: List[ProcedureScope] = [ProcedureScope()]
 
   def enter_Call(self, stack: NodeStack, node: Call) -> None:
     if (
@@ -66,23 +69,44 @@ class WalkLinePurposes(WalkAST):
         ])
     return False
   
-  def enter_While(self, stack: NodeStack, node: While):
-    self.loop_stack.append(LoopContents())
+  def enter_FunctionDef(self, stack: NodeStack, node: AST):
+    self.procedures.append(ProcedureScope())
 
-  def enter_Break(self, stack: NodeStack, node: AST):
-    for lc in self.loop_stack:
-      lc.break_lines.append(node.lineno)
+  def leave_FunctionDef(self, stack: NodeStack, node: While):
+    self.unpack_proc(self.procedures.pop())
+
+  def enter_For(self, stack: NodeStack, node: AST):
+    self.procedures[-1].loop_depth += 1
+
+  def leave_For(self, stack: NodeStack, node: AST):
+    proc = self.procedures[-1]
+    proc.loop_depth -= 1
+    if proc.loop_depth == 0:
+      proc.top_loops_count += 1
   
-  def enter_Return(self, stack: NodeStack, node: AST):
-    for lc in self.loop_stack:
-      lc.break_lines.append(node.lineno)
+  def enter_While(self, stack: NodeStack, node: While):
+    self.procedures[-1].loop_depth += 1
 
   def leave_While(self, stack: NodeStack, node: While):
-    contents = self.loop_stack.pop()
-    if type(node.test) != Constant and len(contents.break_lines) == 0 and len(self.loop_stack) == 0:
-      self.purposes.append(LinePurpose(node.lineno, LinePurpose.END_CONDITION))
+    proc = self.procedures[-1]
+    proc.loop_depth -= 1
+    if proc.loop_depth == 0:
+      proc.top_loops_count += 1
+      if not proc.breaked and type(node.test) != Constant:
+        proc.top_cond.append(LinePurpose(node.lineno, LinePurpose.END_CONDITION))
+
+  def enter_Break(self, stack: NodeStack, node: AST):
+    self.procedures[-1].breaked = True
+  
+  def enter_Return(self, stack: NodeStack, node: AST):
+    self.procedures[-1].breaked = True
+  
+  def unpack_proc(self, proc: ProcedureScope):
+    if len(proc.top_cond) == 1 and proc.top_loops_count == 1:
+      self.purposes.append(proc.top_cond[0])
 
   def walk(self, tree: AST) -> List[LinePurpose]:
     self.purposes = []
     super().walk(tree)
+    self.unpack_proc(self.procedures.pop())
     return self.purposes

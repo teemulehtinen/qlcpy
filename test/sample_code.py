@@ -17,6 +17,10 @@ def count_average() -> None:
       n += 1
     except ValueError:
       print('Not a number')
+
   if n > 0:
     print('Average', s / n)
   print('No numbers')
+
+while False:
+  pass

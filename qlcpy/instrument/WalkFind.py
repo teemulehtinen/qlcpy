@@ -14,7 +14,7 @@ class WalkFind(WalkAST):
     if node.__class__.__name__ in self.class_names:
       self.found.append(node)
 
-  def walk(self, tree: AST, class_names: List[str]):
+  def walk(self, tree: AST, class_names: List[str]) -> List[AST]:
     self.class_names = class_names
     self.found = []
     super().walk(tree)

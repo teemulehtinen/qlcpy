@@ -23,7 +23,7 @@ class LoopCount(QLCPrepared):
     self.scope = scope
 
   def make(self):
-    if len(self.scope.evaluations) > 0:
+    if not self.scope is None and len(self.scope.evaluations) != 1:
       return None
     count = sum(1 for b in self.loop.evaluations if b == 0)
     return QLC(
