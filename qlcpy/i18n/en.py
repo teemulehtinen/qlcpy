@@ -47,6 +47,7 @@ texts = {
   'o_line_purpose_zero_div_guard': 'Guards against division by zero',
   'o_line_purpose_end_condition': 'Is a condition for ending program',
   'o_line_purpose_ignores_input': 'Ignores unwanted input',
+  'o_line_purpose_even_or_odd': 'Tells even and odd numbers apart',
   
   'q_variable_role':
     lambda id, line: (

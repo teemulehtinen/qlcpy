@@ -23,7 +23,7 @@ class LinePurpose(QLCPrepared):
         options([t(f'o_line_purpose_{self.lp.purpose}')], self.lp.purpose, t('o_correct'), True),
         *[
           options([t(f'o_line_purpose_{key}')], key, t('o_incorrect'))
-          for key in self.lp.other_purposes() + ['ignores_input']
+          for key in random.sample(self.lp.other_purposes() + ['ignores_input'], 3)
         ]
       )
     )

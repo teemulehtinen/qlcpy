@@ -57,16 +57,17 @@ class TestQuestions(unittest.TestCase):
       self.assertTrue(all(o.correct == (t == 'parameter') for o in qlc.options if o.type == t))
 
   def test_loop_end(self):
-    qlcs = self._test_qlcs('LoopEnd', { '5': 7, '13': 19, '25': 26 }, self.RE_LINE)
+    qlcs = self._test_qlcs('LoopEnd', { '5': 7, '13': 21, '27': 28 }, self.RE_LINE)
 
   def test_variable_declaration(self):
-    self._test_qlcs('VariableDeclaration', { 'i': 5, 's': 10, 'n': 11, 'word': 12 }, self.RE_EM)
+    cor = { 'i': 5, 's': 10, 'n': 11, 'word': 12, 'v': 16 }
+    self._test_qlcs('VariableDeclaration', cor, self.RE_EM)
 
   def test_except_source(self):
-    self._test_qlcs('ExceptSource', { '18': 16 }, self.RE_LINE)
+    self._test_qlcs('ExceptSource', { '20': 16 }, self.RE_LINE)
 
   def test_line_purpose(self):
-    cor = { '13': 'end_condition', '14': 'read_input', '21': 'zero_div_guard' }
+    cor = { '13': 'end_condition', '14': 'read_input', '17': 'even_or_odd', '23': 'zero_div_guard' }
     self._test_qlcs('LinePurpose', cor, self.RE_LINE, answer_types=True)
 
   def test_variable_role(self):
@@ -74,7 +75,7 @@ class TestQuestions(unittest.TestCase):
     self._test_qlcs('VariableRole', cor, self.RE_EM, answer_types=True)
 
   def test_loop_count(self):
-    self._test_qlcs('LoopCount', { '5': 4, '25': 0 }, self.RE_LINE)
+    self._test_qlcs('LoopCount', { '5': 4, '27': 0 }, self.RE_LINE)
 
   def test_variable_trace(self):
     self._test_qlcs('VariableTrace', { 'f': 'False', 'i': '0, 1, 2, 3' }, self.RE_EM)

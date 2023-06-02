@@ -47,6 +47,7 @@ texts = {
   'o_line_purpose_zero_div_guard': 'Suojaa nollalla jakamiselta',
   'o_line_purpose_end_condition': 'On ehto ohjelman loppumiselle',
   'o_line_purpose_ignores_input': 'Ohittaa ei halutun syötteen',
+  'o_line_purpose_even_or_odd': 'Erottelee parilliset ja parittomat numerot',
 
   'q_variable_role':
     lambda id, line: (

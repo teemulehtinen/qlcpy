@@ -1,6 +1,6 @@
 from ast import (
   AST, Assign, BinOp, Call, Compare, Constant, Div, Eq, Gt, GtE, If, Load,
-  Lt, LtE, Name, NotEq, While
+  Lt, LtE, Mod, Name, NotEq, While
 )
 from typing import List
 
@@ -11,7 +11,8 @@ class LinePurpose():
   READ_INPUT = 'read_input'
   ZERO_DIV_GUARD = 'zero_div_guard'
   END_CONDITION = 'end_condition'
-  SUPPORTED_PURPOSES = [READ_INPUT, ZERO_DIV_GUARD, END_CONDITION]
+  EVEN_OR_ODD = 'even_or_odd'
+  SUPPORTED_PURPOSES = [READ_INPUT, ZERO_DIV_GUARD, END_CONDITION, EVEN_OR_ODD]
 
   def __init__(self, line: int, purpose: str):
     self.line = line
@@ -45,6 +46,13 @@ class WalkLinePurposes(WalkAST):
       for parent, field in stack:
         if type(parent) == If and self.check_zero_guard(parent, field, node.right.id):
           self.purposes.append(LinePurpose(parent.lineno, LinePurpose.ZERO_DIV_GUARD))
+    if (
+      type(node.op) == Mod and type(node.left) == Name
+      and type(node.right) == Constant and node.right.value == 2
+      and len(stack) >= 2 and type(stack[-1][0]) == Compare
+      and type(stack[-2][0]) == If and stack[-2][1] == 'test'
+    ):
+      self.purposes.append(LinePurpose(node.lineno, LinePurpose.EVEN_OR_ODD))
 
   def check_zero_guard(self, node: If, field: str, variable: str) -> bool:
     if type(node.test) == Compare and len(node.test.comparators) == 1:
