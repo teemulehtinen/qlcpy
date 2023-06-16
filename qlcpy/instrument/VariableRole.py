@@ -26,6 +26,15 @@ def is_guarded_by_condition(stack: NodeStack, id: str) -> bool:
       return True
   return False
 
+def is_in_condition_before_loop(stack: NodeStack) -> bool:
+  for n, _ in reversed(stack[:-1]):
+    t = n.__class__.__name__
+    if t in ('If'):
+      return True
+    if t in ('While', 'For'):
+      return False
+  return False
+
 class AssignmentInfo:
 
   @staticmethod
@@ -86,20 +95,21 @@ class VariableRole():
 
   @classmethod
   def classify_variable(cls, var: ProgramData.Element) -> str:
-    if len(var.references) == 0:
-      return cls.DEAD
 
     # Only declaration
     stores = list(r for r in var.references if r.is_store)
     if len(stores) == 0:
       parent = stack_top(var.declaration.stack)
       if is_for(parent):
-        if is_for_range(parent):
+        if is_for_range(parent) and len(var.references) > 0:
           return cls.STEPPER
         return cls.NONE
       a = AssignmentInfo(parent, var.id)
-      if a.is_assignment and type(a.expr) == Constant:
-        return cls.FIXED
+      if a.is_assignment:
+        if len(var.references) == 0:
+          return cls.DEAD
+        if type(a.expr) == Constant:
+          return cls.FIXED
       return cls.NONE
 
     # Includes iterators
@@ -130,7 +140,10 @@ class VariableRole():
       if len(ops) == 1:
         if type(ops.pop()) in [Add, Sub]:
           vals = set(a.value.n if type(a.value) == Constant else None for a in assignments)
-          if not None in vals and len(vals) == 1 and type(vals.pop()) == int:
+          if (
+            not None in vals and len(vals) == 1 and type(vals.pop()) == int
+            and not any(is_in_condition_before_loop(r.stack) for r in stores)
+          ):
             return cls.STEPPER
         return cls.GATHERER
 

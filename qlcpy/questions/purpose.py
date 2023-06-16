@@ -46,6 +46,14 @@ class VariableRole(QLCPrepared):
     analysis = analyse_variable_role(self.variable)
     if (analysis.role == analysis.NONE):
       return None
+
+    # Remove arguable options
+    dis = analysis.other_roles()
+    if analysis.role == analysis.STEPPER:
+      dis.remove(analysis.GATHERER)
+    elif analysis.role == analysis.GATHERER:
+      dis.remove(analysis.STEPPER)
+
     return QLC(
       self.pos,
       self.type,
@@ -54,7 +62,7 @@ class VariableRole(QLCPrepared):
         options([t(f'o_variable_{analysis.role}')], analysis.role, t('o_correct'), True),
         *[
           options([t(f'o_variable_{key}')], key, t('o_incorrect'))
-          for key in random.sample(analysis.other_roles(), 3)
+          for key in random.sample(dis, 3)
         ]
       )
     )
