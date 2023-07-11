@@ -1,5 +1,5 @@
 from typing import List, Optional, Tuple
-from ast import AST, Add, Assign, AugAssign, AnnAssign, BinOp, Call, Constant, For, Name, Sub
+from ast import AST, Add, Assign, AugAssign, AnnAssign, BinOp, Call, Constant, For, Index, Name, Sub
 
 from .trees import first_field, iter_tree, NodeStack, stack_search, stack_top
 from .ProgramData import ProgramData
@@ -12,6 +12,9 @@ def is_for(node: AST) -> bool:
 
 def is_for_range(node: For) -> bool:
   return type(node.iter) == Call and type(node.iter.func) == Name and node.iter.func.id == 'range'
+
+def is_index(node: AST) -> bool:
+  return type(node) == Index
 
 def is_reference(node: AST, id: str) -> bool:
   return type(node) == Name and node.id == id
@@ -143,6 +146,7 @@ class VariableRole():
           if (
             not None in vals and len(vals) == 1 and type(vals.pop()) == int
             and not any(is_in_condition_before_loop(r.stack) for r in stores)
+            and any(is_index(stack_top(r.stack)) for r in var.references if not r.is_store)
           ):
             return cls.STEPPER
         return cls.GATHERER
