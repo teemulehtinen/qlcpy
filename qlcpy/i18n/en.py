@@ -51,7 +51,7 @@ texts = {
   
   'q_variable_role':
     lambda id, line: (
-      f'Which of the following best describes the role of variable <em>{id}</em>'
+      f'Which of the following best describes the role of variable <em>{id}</em> '
       f'that is created on line {line}?'
     ),
   'o_variable_dead': 'The variable is never accessed and could be removed',
