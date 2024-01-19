@@ -82,7 +82,7 @@ class VariableTrace(QLCPrepared):
       decl is None
       or len(vals) < 1
       or includes_references(vals)
-      or len(self.scope.evaluations) > 1
+      or (not self.scope is None and len(self.scope.evaluations) != 1)
     ):
       return None  
     if len(vals) > 8:
