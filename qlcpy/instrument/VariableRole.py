@@ -141,7 +141,8 @@ class VariableRole():
     if all(a.augments_variable for a in assignments):
       ops = set(a.op for a in assignments)
       if len(ops) == 1:
-        if type(ops.pop()) in [Add, Sub]:
+        op = ops.pop()
+        if type(op) in [Add, Sub]:
           vals = set(a.value.n if type(a.value) == Constant else None for a in assignments)
           if (
             not None in vals and len(vals) == 1 and type(vals.pop()) == int
@@ -149,6 +150,10 @@ class VariableRole():
             and any(is_index(stack_top(r.stack)) for r in var.references if not r.is_store)
           ):
             return cls.STEPPER
-        return cls.GATHERER
+        if type(op) == Add:
+          parent = stack_top(var.declaration.stack)
+          a = AssignmentInfo(parent, var.id)
+          if a.is_assignment and type(a.expr) == Constant and type(a.value.n) in [int, str]:
+            return cls.GATHERER
 
     return cls.NONE

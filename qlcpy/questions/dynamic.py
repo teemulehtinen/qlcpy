@@ -77,14 +77,17 @@ class VariableTrace(QLCPrepared):
   def make(self):
     decl = self.variable.declaration
     vals = self.variable.values
-    other = [o.values for o in self.all if o != self.variable]
     if (
       decl is None
       or len(vals) < 1
       or includes_references(vals)
       or (not self.scope is None and len(self.scope.evaluations) != 1)
     ):
-      return None  
+      return None
+    other = [
+      o.values for o in self.all
+      if o != self.variable and not includes_references(o.values)
+    ]
     if len(vals) > 8:
       return QLC(
         self.pos,
@@ -122,7 +125,7 @@ class VariableTrace(QLCPrepared):
       ),
       pick_options(
         options([primitives_to_str(vals)], 'correct_trace', t('o_variable_trace_correct'), True),
-        options([primitives_to_str(vals[:-1])], 'miss_value', t('o_variable_trace_miss')),
+        options([primitives_to_str(vals[:-1])] if len(vals) > 1 else [], 'miss_value', t('o_variable_trace_miss')),
         fill_options(
           4,
           [
