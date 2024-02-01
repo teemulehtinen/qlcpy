@@ -71,6 +71,7 @@ class AssignmentInfo:
     elif type(node) in (Assign, AnnAssign) and self.is_a_target(node, id):
       self.is_assignment = True
       self.expr = node.value
+      self.value = node.value
       op, value = self.extract_binop(node.value, id)
       if not op is None:
         self.includes_variable = True
@@ -153,7 +154,7 @@ class VariableRole():
         if type(op) == Add:
           parent = stack_top(var.declaration.stack)
           a = AssignmentInfo(parent, var.id)
-          if a.is_assignment and type(a.expr) == Constant and type(a.value.n) in [int, str]:
+          if a.is_assignment and type(a.expr) == Constant and type(a.expr.n) in [int, str]:
             return cls.GATHERER
 
     return cls.NONE
