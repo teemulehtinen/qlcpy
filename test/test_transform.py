@@ -4,12 +4,15 @@ import unittest
 from qlcpy.instrument import collect_elements, transform, run_with_instrumentor, parse_body
 from qlcpy.primitives import Primitive
 
+def read_ast(file):
+  with open(file, 'r') as f:
+    return ast.parse(f.read())
+
 class TestTransform(unittest.TestCase):
 
   def setUp(self) -> None:
-    with open('test/sample_code.py', 'r') as f:
-      src = f.read()
-    self.tree = ast.parse(src)
+    self.tree = read_ast('test/sample_code.py')
+    self.issues_tree = read_ast('test/issues_code.py')
 
   def test_names(self) -> None:
     data = collect_elements(self.tree)
@@ -30,6 +33,11 @@ class TestTransform(unittest.TestCase):
     instrumented = transform(self.tree, data, None)
     self.assertNotEqual(self.tree, instrumented)
 
+  def test_issues(self) -> None:
+    data = collect_elements(self.issues_tree)
+    instrumented = transform(self.issues_tree, data, None)
+    self.assertNotEqual(self.issues_tree, instrumented)
+
   def test_run(self) -> None:
     call = "find_first(['ah', 'beh', 'ceh'], 'b')"
     instrumentor = run_with_instrumentor(self.tree, parse_body(call))
@@ -44,3 +52,4 @@ class TestTransform(unittest.TestCase):
     vars = list(instrumentor.data.elements_for_types(['variable']))
     self.assertEqual(vars[2].values, [0, 4, 12])
     self.assertEqual(vars[4].values, [None, '4', '8', ''])
+

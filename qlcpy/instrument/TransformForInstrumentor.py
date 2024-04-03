@@ -1,6 +1,6 @@
 from ast import (
   AnnAssign, AST, Assign, Attribute, BinOp, Call, Constant, Del, Delete, Expr,
-  For, FunctionDef, If, Load, List as ASTList, Module, Name, Store, While
+  For, FunctionDef, If, Load, List as ASTList, Module, Name, Store, Subscript, While
 )
 from typing import List, Optional
 
@@ -53,6 +53,13 @@ class TransformForInstrumentor(TransformAST):
       fin=[Delete([Name(self.tmp_name, Del())])]
     )
 
+  def target_for_load(self, target: AST) -> AST:
+    if type(target) == Name:
+      return Name(target.id, Load())
+    if type(target) == Subscript:
+      return Subscript(target.value, target.slice, Load())
+    return target
+
   def leave_Assign(self, stack: NodeStack, node: AST) -> AST:
     if len(node.targets) > 1:
       return self.explode_assignment_list(node.targets, node.value)
@@ -63,7 +70,7 @@ class TransformForInstrumentor(TransformAST):
     )
 
   def leave_AugAssign(self, stack: NodeStack, node: AST) -> AST:
-    value = BinOp(Name(node.target.id, Load()), node.op, node.value)
+    value = BinOp(self.target_for_load(node.target), node.op, node.value)
     return Assign(
       [node.target],
       self.ins('assignment', self.target(node.target), value),
